@@ -1,7 +1,6 @@
 package io.dgraph;
 
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 import com.google.protobuf.ByteString;
@@ -267,7 +266,10 @@ public class AclTest {
       return;
     }
 
-    assertFalse(shouldFail, "the " + operation + " should have failed");
+    // assertFalse(shouldFail, );
+    if (shouldFail != false) {
+      throw new RuntimeException("the " + operation + " should have failed");
+    }
   }
 
   private void resetUser() throws Exception {

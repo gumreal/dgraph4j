@@ -49,6 +49,14 @@ public class QueryBuilder {
     return resultStr;
   }
 
+  private static String DQL_GroupBy_Count =
+      "{\n"
+          + "   result(func:eq(%s, %s)){\n"
+          + "       %s\n"
+          + "       count: count(%s)\n"
+          + "   }\n"
+          + "}";
+
   /**
    * [ref SQL] SELECT sum(count_edge) FROM SELECT node, count(edge) AS count_edge FROM edge GROUP BY
    * node
@@ -80,7 +88,7 @@ public class QueryBuilder {
 
     String dql =
         String.format(
-            DQL_GroupBy_Count_Sum, node, GeneralHelper.implode(values, ","), node, edge, node);
+            DQL_GroupBy_Count_Sum, node, GeneralHelper.implode(values, ","), edge, edge, edge);
     LOGGER.debug(dql);
 
     DgraphProto.Response res = client.newTransaction().query(dql);
@@ -89,20 +97,13 @@ public class QueryBuilder {
     return resultStr;
   }
 
-  private static String DQL_GroupBy_Count =
-      "{\n"
-          + "   result(func:eq(%s, %s)){\n"
-          + "       %s\n"
-          + "       count: count(%s)\n"
-          + "   }\n"
-          + "}";
   private static String DQL_GroupBy_Count_Sum =
       "{\n"
           + "   var(func:eq(%s, %s)){\n"
-          + "       %s_count as count(%s)\n"
+          + "       count_%s as count(%s)\n"
           + "   }\n"
           + "   result(){\n"
-          + "       sum(val(%s_count))\n"
+          + "       sum: sum(val(count_%s))\n"
           + "   }\n"
           + "}";
 }

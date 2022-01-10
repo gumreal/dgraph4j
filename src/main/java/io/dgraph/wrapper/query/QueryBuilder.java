@@ -12,7 +12,8 @@ public class QueryBuilder {
   private static Logger LOGGER = LoggerFactory.getLogger(QueryBuilder.class.getSimpleName());
 
   /**
-   * [ref SQL] SELECT node, count(edge) AS count_edge FROM edge GROUP BY node
+   * [ref SQL] <br>
+   * SELECT node, count(edge) AS count_edge FROM edge GROUP BY node
    *
    * @param client
    * @param node
@@ -22,20 +23,7 @@ public class QueryBuilder {
    */
   public static String nodeEdgeCount(
       DgraphClient client, String node, Set<String> values, String edge) {
-    if (null == client || values.size() == 0) {
-      LOGGER.warn("invalid dgraph client");
-      return null;
-    }
-    if (GeneralHelper.isEmpty(node)) {
-      LOGGER.warn("null node");
-      return null;
-    }
-    if (null == values || values.size() == 0) {
-      LOGGER.warn("invalid node values");
-      return null;
-    }
-    if (GeneralHelper.isEmpty(edge)) {
-      LOGGER.warn("invalid edge");
+    if (!checkInput(client, node, values, edge)) {
       return null;
     }
 
@@ -58,8 +46,9 @@ public class QueryBuilder {
           + "}";
 
   /**
-   * [ref SQL] SELECT sum(count_edge) FROM SELECT node, count(edge) AS count_edge FROM edge GROUP BY
-   * node
+   * [ref SQL] <br>
+   * SELECT sum(count_edge) FROM <br>
+   * SELECT node, count(edge) AS count_edge FROM edge GROUP BY node
    *
    * @param client
    * @param node
@@ -69,20 +58,7 @@ public class QueryBuilder {
    */
   public static String nodeEdgeCountSum(
       DgraphClient client, String node, Set<String> values, String edge) {
-    if (null == client || values.size() == 0) {
-      LOGGER.warn("invalid dgraph client");
-      return null;
-    }
-    if (GeneralHelper.isEmpty(node)) {
-      LOGGER.warn("null node");
-      return null;
-    }
-    if (null == values || values.size() == 0) {
-      LOGGER.warn("invalid node values");
-      return null;
-    }
-    if (GeneralHelper.isEmpty(edge)) {
-      LOGGER.warn("invalid edge");
+    if (!checkInput(client, node, values, edge)) {
       return null;
     }
 
@@ -106,4 +82,32 @@ public class QueryBuilder {
           + "       sum: sum(val(count_%s))\n"
           + "   }\n"
           + "}";
+
+  /**
+   * @param client
+   * @param node
+   * @param values
+   * @param edge
+   * @return
+   */
+  private static boolean checkInput(
+      DgraphClient client, String node, Set<String> values, String edge) {
+    if (null == client || values.size() == 0) {
+      LOGGER.warn("invalid dgraph client");
+      return false;
+    }
+    if (GeneralHelper.isEmpty(node)) {
+      LOGGER.warn("null node");
+      return false;
+    }
+    if (null == values || values.size() == 0) {
+      LOGGER.warn("invalid node values");
+      return false;
+    }
+    if (GeneralHelper.isEmpty(edge)) {
+      LOGGER.warn("invalid edge");
+      return false;
+    }
+    return true;
+  }
 }

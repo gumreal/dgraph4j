@@ -1,8 +1,13 @@
 package io.dgraph.wrapper.query;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import io.dgraph.DgraphClient;
 import io.dgraph.DgraphProto;
 import io.dgraph.wrapper.GeneralHelper;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,20 +26,30 @@ public class QueryBuilder {
    * @param edge
    * @return
    */
-  public static String nodeEdgeCount(
+  public static Map<String, Long> nodeEdgeCount(
       DgraphClient client, String node, Set<String> values, String edge) {
+    // check
     if (!checkInput(client, node, values, edge)) {
       return null;
     }
 
+    // query
     String dql =
         String.format(DQL_GroupBy_Count, node, GeneralHelper.implode(values, ","), node, edge);
     LOGGER.debug(dql);
-
     DgraphProto.Response res = client.newTransaction().query(dql);
     String resultStr = res.getJson().toStringUtf8();
     LOGGER.debug(resultStr);
-    return resultStr;
+
+    // parse result
+    Map<String, Long> resultMap = new HashMap<>();
+    JsonObject jo = new Gson().fromJson(resultStr, JsonObject.class);
+    JsonArray jsonArray = jo.getAsJsonArray("result");
+    for (int i = 0; i < jsonArray.size(); i++) {
+      JsonObject object = jsonArray.get(i).getAsJsonObject();
+      resultMap.put(object.get(node).getAsString(), object.get("count").getAsLong());
+    }
+    return resultMap;
   }
 
   private static String DQL_GroupBy_Count =
@@ -56,21 +71,28 @@ public class QueryBuilder {
    * @param edge
    * @return
    */
-  public static String nodeEdgeCountSum(
+  public static Long nodeEdgeCountSum(
       DgraphClient client, String node, Set<String> values, String edge) {
+    // check
     if (!checkInput(client, node, values, edge)) {
       return null;
     }
 
+    // query
     String dql =
         String.format(
             DQL_GroupBy_Count_Sum, node, GeneralHelper.implode(values, ","), edge, edge, edge);
     LOGGER.debug(dql);
-
     DgraphProto.Response res = client.newTransaction().query(dql);
     String resultStr = res.getJson().toStringUtf8();
     LOGGER.debug(resultStr);
-    return resultStr;
+
+    // parse result
+    JsonArray arr = parseResultArr(resultStr);
+    if (null == arr || arr.size() == 0) {
+      return null;
+    }
+    return arr.get(0).getAsJsonObject().get("sum").getAsLong();
   }
 
   private static String DQL_GroupBy_Count_Sum =
@@ -109,5 +131,19 @@ public class QueryBuilder {
       return false;
     }
     return true;
+  }
+
+  /**
+   * @param jsonStr
+   * @return
+   */
+  private static JsonArray parseResultArr(String jsonStr) {
+    try {
+      JsonObject jo = new Gson().fromJson(jsonStr, JsonObject.class);
+      return jo.getAsJsonArray("result");
+
+    } catch (Exception e) {
+      return null;
+    }
   }
 }

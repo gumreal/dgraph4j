@@ -4,16 +4,21 @@ import io.dgraph.DgraphClient;
 import io.dgraph.wrapper.ClientBuilder;
 import io.dgraph.wrapper.WrapperException;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class QueryBuilderTest {
   @Test
   public void testNodeEdgeCount() {
     try {
-      String result =
+      Map<String, Long> map =
           QueryBuilder.nodeEdgeCount(getClient(), "country", getCountries(), "geo_has_device");
-      System.out.println(result);
+      Assert.assertNotNull(map);
+      map.keySet()
+          .stream()
+          .forEach(s -> System.out.println(String.format("%s -> %d", s, map.get(s))));
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -22,9 +27,10 @@ public class QueryBuilderTest {
   @Test
   public void testNodeEdgeCountSum() {
     try {
-      String result =
+      Long result =
           QueryBuilder.nodeEdgeCountSum(getClient(), "country", getCountries(), "geo_has_device");
-      System.out.println(result);
+      Assert.assertNotNull(result);
+      System.out.println(String.format("sum -> %d", result));
     } catch (Exception e) {
       e.printStackTrace();
     }

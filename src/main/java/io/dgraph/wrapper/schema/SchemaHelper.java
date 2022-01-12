@@ -2,10 +2,9 @@ package io.dgraph.wrapper.schema;
 
 import io.dgraph.DgraphClient;
 import io.dgraph.DgraphProto;
-import io.dgraph.wrapper.dic.DataType;
-import io.dgraph.wrapper.dic.DateTimeIndexType;
-import io.dgraph.wrapper.dic.StringIndexType;
-
+import io.dgraph.wrapper.model.DataType;
+import io.dgraph.wrapper.model.DateTimeIndexType;
+import io.dgraph.wrapper.model.StringIndexType;
 import java.util.Set;
 
 /** Schema Tool */
@@ -79,12 +78,14 @@ public class SchemaHelper {
    * @param indexName
    * @return
    */
-  private static void alterPredicate(
+  protected static void alterPredicate(
       DgraphClient client, String predicate, DataType dt, boolean createIndex, String indexName) {
     String schema = String.format("%s: %s", predicate, dt.toString());
     if (createIndex) {
       schema += String.format(" @index(%s)", indexName);
     }
+    schema += " .";
+
     DgraphProto.Operation op = DgraphProto.Operation.newBuilder().setSchema(schema).build();
     client.alter(op);
   }
@@ -96,14 +97,15 @@ public class SchemaHelper {
    * @param typeName
    * @param predicates
    */
-  public static void alterType(DgraphClient client, String typeName, Set<String> predicates){
+  public static void alterType(DgraphClient client, String typeName, Set<String> predicates) {
     StringBuffer buffer = new StringBuffer();
-    buffer.append(typeName + " {\n");
-    if(null != predicates){
+    buffer.append("type " + typeName + " {\n");
+    if (null != predicates) {
       predicates.forEach(s -> buffer.append("   " + s + "\n"));
     }
     buffer.append("}");
-    DgraphProto.Operation op = DgraphProto.Operation.newBuilder().setSchema(buffer.toString()).build();
+    DgraphProto.Operation op =
+        DgraphProto.Operation.newBuilder().setSchema(buffer.toString()).build();
     client.alter(op);
   }
 
@@ -113,7 +115,7 @@ public class SchemaHelper {
    * @param client
    * @param schema
    */
-  public static void alter(DgraphClient client, String schema){
+  public static void alter(DgraphClient client, String schema) {
     DgraphProto.Operation op = DgraphProto.Operation.newBuilder().setSchema(schema).build();
     client.alter(op);
   }

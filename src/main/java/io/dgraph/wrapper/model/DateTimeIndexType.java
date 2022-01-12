@@ -1,4 +1,4 @@
-package io.dgraph.wrapper.dic;
+package io.dgraph.wrapper.model;
 
 /** */
 public enum DateTimeIndexType {

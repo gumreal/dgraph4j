@@ -1,13 +1,11 @@
 package io.dgraph.wrapper.query;
 
-import io.dgraph.DgraphClient;
-import io.dgraph.wrapper.ClientBuilder;
-import io.dgraph.wrapper.WrapperException;
+import io.dgraph.wrapper.TestBase;
 import java.util.*;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-public class QueryHelperTest {
+public class QueryHelperTest extends TestBase {
   @Test
   public void testNodeEdgeCount() {
     try {
@@ -59,10 +57,6 @@ public class QueryHelperTest {
     } catch (Exception e) {
       e.printStackTrace();
     }
-  }
-
-  private DgraphClient getClient() throws WrapperException {
-    return ClientBuilder.newInstance().withAlpha("192.168.4.237", 9080).build();
   }
 
   private Set<String> getCountries() {

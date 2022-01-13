@@ -1,9 +1,6 @@
 package io.dgraph.wrapper.query;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import com.google.gson.*;
 import io.dgraph.DgraphClient;
 import io.dgraph.DgraphProto;
 import io.dgraph.wrapper.GeneralHelper;
@@ -147,6 +144,18 @@ public class QueryHelper {
     LOGGER.debug(resultStr);
 
     // parse result
+    return makeUidList(resultStr, predicate);
+  }
+
+  private static String DQL_uid_get_by_predicate =
+      "{\n" + "\t%s(func:eq(%s, \"%s\")){\n" + "\t\tuid\n" + "\t\t%s\n" + "\t}\n" + "}";
+
+  /**
+   * @param resultStr
+   * @param predicate
+   * @return
+   */
+  protected static List<String> makeUidList(String resultStr, String predicate) {
     JsonObject jo = new Gson().fromJson(resultStr, JsonObject.class);
     if (null == jo || !jo.has(predicate)) {
       return null;
@@ -163,8 +172,66 @@ public class QueryHelper {
     return resultArr;
   }
 
-  private static String DQL_uid_get_by_predicate =
-      "{\n" + "\t%s(func:eq(%s, \"%s\")){\n" + "\t\tuid\n" + "\t\t%s\n" + "\t}\n" + "}";
+  /**
+   * @param client
+   * @param conditions
+   * @return
+   */
+  public static List<String> getUidByPredicates(
+      DgraphClient client, Map<String, String> conditions) {
+    if (null == client || null == conditions || conditions.size() == 0) {
+      LOGGER.warn("invalid input");
+      return null;
+    }
+
+    String predicate1 = null;
+    String value1 = null;
+    StringBuffer otherConditions = new StringBuffer();
+    StringBuffer predicates = new StringBuffer();
+    predicates.append("\t\tuid\n");
+    int i = 0;
+    for (String k : conditions.keySet()) {
+      if (0 == i) {
+        predicate1 = k;
+        value1 = conditions.get(k);
+      } else {
+        if (1 == i) {
+          otherConditions.append(String.format("@filter(eq(%s, %s)", k, conditions.get(k)));
+        } else {
+          otherConditions.append(String.format(" AND eq(%s, %s)", k, conditions.get(k)));
+        }
+      }
+
+      predicates.append(String.format("\t\t%s\n", k));
+      i++;
+    }
+    if (otherConditions.length() > 0) {
+      otherConditions.append(")");
+    }
+    String dql =
+        String.format(
+            DQL_uid_get_by_predicates,
+            predicate1,
+            value1,
+            otherConditions.toString(),
+            predicates.toString());
+    LOGGER.debug(dql);
+
+    // query
+    DgraphProto.Response res = client.newTransaction().query(dql);
+    String resultStr = res.getJson().toStringUtf8();
+    LOGGER.debug(resultStr);
+
+    // parse result
+    return makeUidList(resultStr, "result");
+  }
+
+  // @filter(eq(ext, "ext01") AND eq(e1, "e1_v"))
+  //  bundle
+  //  ext
+  //  e1
+  private static String DQL_uid_get_by_predicates =
+      "{\n" + "\tresult(func: eq(%s, \"%s\")) %s{\n" + "%s\n" + "\t}\n" + "}";
 
   /**
    * [ref SQL] <br>
@@ -188,6 +255,7 @@ public class QueryHelper {
         String.format(
             DQL_GroupBy_Count, vertx, GeneralHelper.implode(values, ",", "\"", "\""), vertx, edge);
     LOGGER.debug(dql);
+
     DgraphProto.Response res = client.newTransaction().query(dql);
     String resultStr = res.getJson().toStringUtf8();
     LOGGER.debug(resultStr);
@@ -198,7 +266,9 @@ public class QueryHelper {
     JsonArray jsonArray = jo.getAsJsonArray("result");
     for (int i = 0; i < jsonArray.size(); i++) {
       JsonObject object = jsonArray.get(i).getAsJsonObject();
-      resultMap.put(object.get(vertx).getAsString(), object.get("count").getAsLong());
+      String k = object.get(vertx).getAsString();
+      long v = object.has("count") ? object.get("count").getAsLong() : 0l;
+      resultMap.put(k, resultMap.containsKey(k) ? (resultMap.get(k) + v) : v);
     }
     return resultMap;
   }
@@ -239,16 +309,24 @@ public class QueryHelper {
             edge,
             edge);
     LOGGER.debug(dql);
+    System.out.println(dql);
+
     DgraphProto.Response res = client.newTransaction().query(dql);
     String resultStr = res.getJson().toStringUtf8();
     LOGGER.debug(resultStr);
+    System.out.println(resultStr);
 
     // parse result
     JsonArray arr = parseResultArr(resultStr);
     if (null == arr || arr.size() == 0) {
       return null;
     }
-    return arr.get(0).getAsJsonObject().get("sum").getAsLong();
+    JsonElement je = arr.get(0).getAsJsonObject().get("sum");
+    if (null == je || je instanceof JsonNull) {
+      return 0l;
+    } else {
+      return arr.get(0).getAsJsonObject().get("sum").getAsLong();
+    }
   }
 
   private static String DQL_GroupBy_Count_Sum =

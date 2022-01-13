@@ -73,6 +73,23 @@ public class QueryHelperTest extends TestBase {
   }
 
   @Test
+  public void testGetByPredicates() {
+    Map<String, String> map = new HashMap<>();
+    map.put("bundleName", "b13-1");
+    map.put("ext", "ext01");
+    map.put("e1", "e1_v");
+
+    try {
+      List<String> result = QueryHelper.getUidByPredicates(getClient(), map);
+      System.out.println("getUidByPredicates result: " + result.toString());
+      Assert.assertNotNull(result);
+    } catch (Exception e) {
+      e.printStackTrace();
+      Assert.assertTrue(false);
+    }
+  }
+
+  @Test
   public void testNodeEdgeCount() {
     try {
       Map<String, Long> map =

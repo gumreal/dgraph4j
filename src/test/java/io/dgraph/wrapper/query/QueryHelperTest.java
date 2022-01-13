@@ -29,17 +29,30 @@ public class QueryHelperTest extends TestBase {
       MutationSet.setEdges(client, bundleUid, edgeType, countries);
 
       // query
-      List<CascadeEdge> edgeFilters = new ArrayList<>();
-      edgeFilters.add(new CascadeEdge(edgeType, new Country()));
+      List<CascadeEdge> cascadeEdges = new ArrayList<>();
+      cascadeEdges.add(new CascadeEdge(edgeType, new Country()));
 
       Bundle toQuery = new Bundle();
       toQuery.setUid(bundleUid);
 
-      VertexBase vertx = QueryHelper.getVertxByUid(getClient(), toQuery, edgeFilters);
-      Assert.assertNotNull(vertx);
-      System.out.println(vertx.toJson());
-      Assert.assertTrue(vertx instanceof Bundle);
-      Assert.assertEquals(((Bundle) vertx).getRelease_in().size(), 2);
+      VertexBase vertex = QueryHelper.getVertxByUid(client, toQuery, cascadeEdges);
+      Assert.assertNotNull(vertex);
+      System.out.println(vertex.toJson());
+      Assert.assertTrue(vertex instanceof Bundle);
+      Assert.assertEquals(((Bundle) vertex).getRelease_in().size(), 2);
+
+      // reverse query
+      cascadeEdges.clear();
+      cascadeEdges.add(new CascadeEdge(edgeType, new Bundle(), true));
+
+      Country c1 = new Country();
+      c1.setUid(country_1_Uid);
+
+      vertex = QueryHelper.getVertxByUid(client, c1, cascadeEdges);
+      Assert.assertNotNull(vertex);
+      System.out.println(vertex.toJson());
+      Assert.assertTrue(vertex instanceof Country);
+      Assert.assertEquals(((Country) vertex).getRelease_in().size(), 1);
 
     } catch (Exception e) {
       e.printStackTrace();

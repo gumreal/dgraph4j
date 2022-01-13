@@ -1,6 +1,7 @@
 package io.dgraph.wrapper;
 
 import com.google.gson.Gson;
+import com.google.gson.annotations.SerializedName;
 import io.dgraph.DgraphClient;
 import io.dgraph.wrapper.model.VertexBase;
 import java.util.HashSet;
@@ -45,6 +46,11 @@ public class TestBase {
       return predicates;
     }
 
+    public static Bundle fromJson(String jsonStr) {
+      System.out.println("Bundle.fromJson");
+      return new Gson().fromJson(jsonStr, Bundle.class);
+    }
+
     public String getBundleName() {
       return bundleName;
     }
@@ -65,6 +71,9 @@ public class TestBase {
   /** */
   public static class Country extends VertexBase {
     private String country;
+
+    @SerializedName("~release_in")
+    private List<Bundle> release_in;
 
     /**
      * @param c
@@ -95,6 +104,14 @@ public class TestBase {
 
     public void setCountry(String country) {
       this.country = country;
+    }
+
+    public List<Bundle> getRelease_in() {
+      return release_in;
+    }
+
+    public void setRelease_in(List<Bundle> release_in) {
+      this.release_in = release_in;
     }
   }
 }

@@ -23,7 +23,7 @@ public class QueryHelper {
    * @return
    */
   public static VertexBase getVertxByUid(
-          DgraphClient client, VertexBase obj, Collection<CascadeEdge> filters) {
+      DgraphClient client, VertexBase obj, Collection<CascadeEdge> filters) {
     // check
     if (null == client) {
       LOGGER.warn("invalid dgraph client");
@@ -102,7 +102,7 @@ public class QueryHelper {
    * @return
    */
   protected static String getEdgeVertxQueryPredicates(
-          Collection<CascadeEdge> filters, int indentLevel) {
+      Collection<CascadeEdge> filters, int indentLevel) {
     if (null == filters || filters.size() == 0) {
       return "";
     }
@@ -115,7 +115,7 @@ public class QueryHelper {
             return;
           }
 
-          buffer.append(prefixObj + (f.isReverse()?"~":"") + f.getEdgeType() + "{\n");
+          buffer.append(prefixObj + (f.isReverse() ? "~" : "") + f.getEdgeType() + "{\n");
           buffer.append(
               getQueryPredicateStr(f.getOtherVertx().getPredicates(), true, indentLevel + 1));
           buffer.append(prefixObj + "}\n");

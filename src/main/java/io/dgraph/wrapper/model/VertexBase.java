@@ -35,8 +35,8 @@ public abstract class VertexBase implements Serializable {
    * @param jsonStr
    * @return
    */
-  public static VertexBase fromJson(String jsonStr){
-    return null;
+  public VertexBase transformToJson(String jsonStr) {
+    return new Gson().fromJson(jsonStr, this.getClass());
   }
 
   /**
@@ -44,8 +44,8 @@ public abstract class VertexBase implements Serializable {
    * @return
    */
   public VertexBase mergeJson(String jsonStr) {
-    VertexBase vertex = fromJson(jsonStr);
-    if( null != vertex){
+    VertexBase vertex = transformToJson(jsonStr);
+    if (null != vertex) {
       vertex.setUid(getUid());
     }
     return vertex;

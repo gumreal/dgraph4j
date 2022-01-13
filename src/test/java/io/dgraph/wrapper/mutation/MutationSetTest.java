@@ -3,7 +3,7 @@ package io.dgraph.wrapper.mutation;
 import io.dgraph.DgraphClient;
 import io.dgraph.wrapper.TestBase;
 import io.dgraph.wrapper.WrapperException;
-import io.dgraph.wrapper.model.DgraphTypeBase;
+import io.dgraph.wrapper.model.VertxBase;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -28,12 +28,12 @@ public class MutationSetTest extends TestBase {
 
   @Test
   public void testSetList() {
-    List<DgraphTypeBase> list = new ArrayList<>();
+    List<VertxBase> list = new ArrayList<>();
     list.add(Bundle.newBundle("com.b"));
     list.add(Bundle.newBundle("com.c"));
 
     try {
-      Collection<DgraphTypeBase> result = MutationSet.setVertx(getClient(), list);
+      Collection<VertxBase> result = MutationSet.setVertx(getClient(), list);
       Assert.assertNotNull(result);
       Assert.assertEquals(2, result.size());
       result.forEach(dt -> System.out.println("generated [uid]" + dt.getUid()));

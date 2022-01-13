@@ -2,10 +2,12 @@ package io.dgraph.wrapper.query;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import io.dgraph.DgraphClient;
 import io.dgraph.DgraphProto;
 import io.dgraph.wrapper.GeneralHelper;
+import io.dgraph.wrapper.model.VertxBase;
 import java.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +15,116 @@ import org.slf4j.LoggerFactory;
 /** */
 public class QueryHelper {
   private static Logger LOGGER = LoggerFactory.getLogger(QueryHelper.class.getSimpleName());
+
+  /**
+   * Get vertx, with its edge to Vertx
+   *
+   * @param obj
+   * @return
+   */
+  public static VertxBase getVertxByUid(
+      DgraphClient client, VertxBase obj, Collection<EdgeToFilter> filters) {
+    // check
+    if (null == client) {
+      LOGGER.warn("invalid dgraph client");
+      return null;
+    }
+    if (null == obj || null == obj.getUid()) {
+      LOGGER.warn("invalid vertx");
+      return null;
+    }
+    int validFilterCount = 0;
+    if (null != filters && filters.size() > 0) {
+      Iterator<EdgeToFilter> iter = filters.iterator();
+      while (iter.hasNext()) {
+        EdgeToFilter f = iter.next();
+        if (GeneralHelper.isEmpty(f.getEdgeType()) || null == f.getToVertx()) {
+          LOGGER.warn("invalid EdgeToFilter");
+          return null;
+        } else {
+          validFilterCount++;
+        }
+      }
+    }
+
+    // dql
+    String dql =
+        String.format(
+            DQL_vertx_get,
+            obj.getClass().getSimpleName(),
+            obj.getUid(),
+            getQueryPredicateStr(obj.getPredicates(), false, 2),
+            validFilterCount > 0 ? getEdgeVertxQueryPredicates(filters, 2) : "");
+    LOGGER.debug(dql);
+
+    // query
+    DgraphProto.Response res = client.newTransaction().query(dql);
+    String resultStr = res.getJson().toStringUtf8();
+    LOGGER.debug(resultStr);
+
+    // parse result
+    JsonObject jo = new Gson().fromJson(resultStr, JsonObject.class);
+    JsonElement je = jo.get(obj.getClass().getSimpleName());
+    if (null == je) {
+      LOGGER.warn("invalid response:" + resultStr);
+      return null;
+    }
+    JsonArray ja = je.getAsJsonArray();
+    if (null == ja || ja.size() == 0) {
+      return null;
+    }
+    String jsonStr = ja.get(0).getAsJsonObject().toString();
+
+    // done
+    return obj.mergeJson(jsonStr);
+  }
+
+  /**
+   * @param predicates
+   * @param withUid
+   * @param indentLevel
+   * @return
+   */
+  protected static String getQueryPredicateStr(
+      Set<String> predicates, boolean withUid, int indentLevel) {
+    String linePrefix = GeneralHelper.getIndentPrefix(indentLevel);
+    StringBuffer buffer = new StringBuffer();
+    if (withUid) {
+      buffer.append(linePrefix + "uid\n");
+    }
+    predicates.forEach(s -> buffer.append(linePrefix + s + "\n"));
+    return buffer.toString();
+  }
+
+  /**
+   * @param filters
+   * @param indentLevel
+   * @return
+   */
+  protected static String getEdgeVertxQueryPredicates(
+      Collection<EdgeToFilter> filters, int indentLevel) {
+    if (null == filters || filters.size() == 0) {
+      return "";
+    }
+
+    StringBuffer buffer = new StringBuffer();
+    String prefixObj = GeneralHelper.getIndentPrefix(indentLevel);
+    filters.forEach(
+        f -> {
+          if (null == f || GeneralHelper.isEmpty(f.getEdgeType()) || null == f.getToVertx()) {
+            return;
+          }
+
+          buffer.append(prefixObj + f.getEdgeType() + "{\n");
+          buffer.append(
+              getQueryPredicateStr(f.getToVertx().getPredicates(), true, indentLevel + 1));
+          buffer.append(prefixObj + "}\n");
+        });
+    return buffer.toString();
+  }
+
+  private static String DQL_vertx_get =
+      "{\n" + "   %s(func:uid(%s)){\n" + "%s\n" + "%s\n" + "   }\n" + "}";
 
   /**
    * [ref SQL] <br>
@@ -24,7 +136,7 @@ public class QueryHelper {
    * @param edge
    * @return
    */
-  public static Map<String, Long> nodeEdgeCount(
+  public static Map<String, Long> vertxEdgeCount(
       DgraphClient client, String vertx, Set<String> values, String edge) {
     // check
     if (!checkInput(client, vertx, values, edge)) {
@@ -70,7 +182,7 @@ public class QueryHelper {
    * @param edge
    * @return
    */
-  public static Long nodeEdgeCountSum(
+  public static Long vertxEdgeCountSum(
       DgraphClient client, String vertx, Set<String> values, String edge) {
     // check
     if (!checkInput(client, vertx, values, edge)) {

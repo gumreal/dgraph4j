@@ -1,8 +1,9 @@
 package io.dgraph.wrapper;
 
 import io.dgraph.DgraphClient;
-import io.dgraph.wrapper.model.DgraphTypeBase;
+import io.dgraph.wrapper.model.VertxBase;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /** */
@@ -20,8 +21,9 @@ public class TestBase {
   }
 
   /** */
-  public static class Bundle extends DgraphTypeBase {
+  public static class Bundle extends VertxBase {
     private String bundleName;
+    private List<Country> release_in;
 
     /**
      * @param bundleName
@@ -49,10 +51,18 @@ public class TestBase {
     public void setBundleName(String bundleName) {
       this.bundleName = bundleName;
     }
+
+    public List<Country> getRelease_in() {
+      return release_in;
+    }
+
+    public void setRelease_in(List<Country> release_in) {
+      this.release_in = release_in;
+    }
   }
 
   /** */
-  public static class Country extends DgraphTypeBase {
+  public static class Country extends VertxBase {
     private String country;
 
     /**

@@ -1,16 +1,57 @@
 package io.dgraph.wrapper.query;
 
+import io.dgraph.DgraphClient;
 import io.dgraph.wrapper.TestBase;
+import io.dgraph.wrapper.model.VertxBase;
+import io.dgraph.wrapper.mutation.MutationSet;
 import java.util.*;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class QueryHelperTest extends TestBase {
+
+  @Test
+  public void testGetVertx() {
+    try {
+      DgraphClient client = getClient();
+
+      // stub
+      String edgeType = "release_in";
+      String bundleUid = MutationSet.setVertx(client, Bundle.newBundle("bundle.test.get.vertx"));
+      String country_1_Uid =
+          MutationSet.setVertx(client, Country.newCountry("country.01.test.get.vertx"));
+      String country_2_Uid =
+          MutationSet.setVertx(client, Country.newCountry("country.02.test.get.vertx"));
+
+      List<String> countries = new ArrayList<>();
+      countries.add(country_1_Uid);
+      countries.add(country_2_Uid);
+      MutationSet.setEdges(client, bundleUid, edgeType, countries);
+
+      // query
+      List<EdgeToFilter> edgeFilters = new ArrayList<>();
+      edgeFilters.add(new EdgeToFilter(edgeType, new Country()));
+
+      Bundle toQuery = new Bundle();
+      toQuery.setUid(bundleUid);
+
+      VertxBase vertx = QueryHelper.getVertxByUid(getClient(), toQuery, edgeFilters);
+      Assert.assertNotNull(vertx);
+      System.out.println(vertx.toJson());
+      Assert.assertTrue(vertx instanceof Bundle);
+      Assert.assertEquals(((Bundle) vertx).getRelease_in().size(), 2);
+
+    } catch (Exception e) {
+      e.printStackTrace();
+      Assert.assertTrue(false);
+    }
+  }
+
   @Test
   public void testNodeEdgeCount() {
     try {
       Map<String, Long> map =
-          QueryHelper.nodeEdgeCount(getClient(), "country", getCountries(), "geo_has_device");
+          QueryHelper.vertxEdgeCount(getClient(), "country", getCountries(), "geo_has_device");
       Assert.assertNotNull(map);
 
       System.out.println("nodeEdgeCount result:");
@@ -27,7 +68,7 @@ public class QueryHelperTest extends TestBase {
   public void testNodeEdgeCountSum() {
     try {
       Long result =
-          QueryHelper.nodeEdgeCountSum(getClient(), "country", getCountries(), "geo_has_device");
+          QueryHelper.vertxEdgeCountSum(getClient(), "country", getCountries(), "geo_has_device");
       Assert.assertNotNull(result);
       System.out.println(String.format("nodeEdgeCountSum -> %d", result));
     } catch (Exception e) {

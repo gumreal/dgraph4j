@@ -6,7 +6,8 @@ import io.dgraph.DgraphClient;
 import io.dgraph.DgraphProto;
 import io.dgraph.Transaction;
 import io.dgraph.wrapper.GeneralHelper;
-import io.dgraph.wrapper.model.DgraphTypeBase;
+import io.dgraph.wrapper.model.SimpleEdge;
+import io.dgraph.wrapper.model.VertxBase;
 import java.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,17 +22,20 @@ public class MutationSet {
    * @param client
    * @param obj
    */
-  public static String setVertx(DgraphClient client, DgraphTypeBase obj) {
+  public static String setVertx(DgraphClient client, VertxBase obj) {
     if (null == obj) {
       return null;
     }
 
     String uid = obj.getUid();
+    String requestJson = obj.toJson();
+    LOGGER.debug(requestJson);
+
     Transaction txn = client.newTransaction();
     try {
       DgraphProto.Mutation mutation =
           DgraphProto.Mutation.newBuilder()
-              .setSetJson(ByteString.copyFromUtf8(obj.toJson()))
+              .setSetJson(ByteString.copyFromUtf8(requestJson))
               .build();
       DgraphProto.Response res = txn.mutate(mutation);
       LOGGER.debug(res.toString());
@@ -60,18 +64,17 @@ public class MutationSet {
    * @param client
    * @param list
    */
-  public static Collection<DgraphTypeBase> setVertx(
-      DgraphClient client, Collection<DgraphTypeBase> list) {
+  public static Collection<VertxBase> setVertx(DgraphClient client, Collection<VertxBase> list) {
     if (null == list || list.size() == 0) {
       return null;
     }
 
     // set stub variable for uid
     int i = 0;
-    Map<String, DgraphTypeBase> varUidMap = new HashMap<>();
-    Iterator<DgraphTypeBase> iter = list.iterator();
+    Map<String, VertxBase> varUidMap = new HashMap<>();
+    Iterator<VertxBase> iter = list.iterator();
     while (iter.hasNext()) {
-      DgraphTypeBase dt = iter.next();
+      VertxBase dt = iter.next();
       if (null == dt.getUid()) {
         String varUid = "var" + (i++);
         dt.setUid("_:" + varUid);
@@ -79,12 +82,15 @@ public class MutationSet {
       }
     }
 
+    String requestJson = new Gson().toJson(list);
+    LOGGER.debug(requestJson);
+
     // set to dgraph
     Transaction txn = client.newTransaction();
     try {
       DgraphProto.Mutation mutation =
           DgraphProto.Mutation.newBuilder()
-              .setSetJson(ByteString.copyFromUtf8(new Gson().toJson(list)))
+              .setSetJson(ByteString.copyFromUtf8(requestJson))
               .build();
       DgraphProto.Response res = txn.mutate(mutation);
       LOGGER.debug(res.toString());
@@ -147,10 +153,17 @@ public class MutationSet {
     }
 
     StringBuffer buffer = new StringBuffer();
+    buffer.append("[\n");
+    int i = 0;
     for (String to : toUids) {
-      buffer.append(String.format(DQL_triple, fromUid, edgeType, to));
+      if (i++ > 0) {
+        buffer.append(",\n");
+      }
+      buffer.append(new SimpleEdge(fromUid, edgeType, to).toLinkJson());
     }
+    buffer.append("]\n");
     String dql = String.format(DQL_set_edge, buffer);
+    LOGGER.debug(dql);
 
     Transaction txn = client.newTransaction();
     try {
@@ -162,6 +175,8 @@ public class MutationSet {
       txn.commit();
 
     } catch (Exception e) {
+      LOGGER.error(e.getMessage());
+      return false;
 
     } finally {
       txn.discard();
@@ -171,8 +186,7 @@ public class MutationSet {
     return true;
   }
 
-  private static final String DQL_set_edge = "{\n" + "   set{\n" + "       %s\n" + "   }\n" + "}";
-  private static final String DQL_triple = "<%s> <%s> <%s>\n";
+  private static final String DQL_set_edge = "{\n" + "   \"set\":%s\n" + "}";
 
   /**
    * send raw json for Set Command

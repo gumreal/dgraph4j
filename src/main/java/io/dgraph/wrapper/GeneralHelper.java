@@ -68,4 +68,16 @@ public class GeneralHelper {
     buffer.append(suffix);
     return buffer.toString();
   }
+
+  /**
+   * @param level
+   * @return
+   */
+  public static String getIndentPrefix(int level) {
+    StringBuffer buffer = new StringBuffer();
+    for (int i = 0; i < level; i++) {
+      buffer.append("    ");
+    }
+    return buffer.toString();
+  }
 }

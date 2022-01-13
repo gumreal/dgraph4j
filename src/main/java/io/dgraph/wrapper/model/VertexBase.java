@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.util.Set;
 
 /** Dgraph Custom Data Type */
-public abstract class VertxBase implements Serializable {
+public abstract class VertexBase implements Serializable {
   @SerializedName("dgraph.type")
   protected String dgraphType = this.getClass().getSimpleName();
 
@@ -15,10 +15,10 @@ public abstract class VertxBase implements Serializable {
   protected transient Set<String> predicates;
 
   /** */
-  public VertxBase() {}
+  public VertexBase() {}
 
   /** @param uid */
-  public VertxBase(String uid) {
+  public VertexBase(String uid) {
     setUid(uid);
   }
 
@@ -35,18 +35,20 @@ public abstract class VertxBase implements Serializable {
    * @param jsonStr
    * @return
    */
-  public VertxBase fromJson(String jsonStr) {
-    return new Gson().fromJson(jsonStr, this.getClass());
+  public static VertexBase fromJson(String jsonStr){
+    return null;
   }
 
   /**
    * @param jsonStr
    * @return
    */
-  public VertxBase mergeJson(String jsonStr) {
-    VertxBase vertx = fromJson(jsonStr);
-    vertx.setUid(getUid());
-    return vertx;
+  public VertexBase mergeJson(String jsonStr) {
+    VertexBase vertex = fromJson(jsonStr);
+    if( null != vertex){
+      vertex.setUid(getUid());
+    }
+    return vertex;
   }
 
   /**

@@ -7,7 +7,7 @@ import io.dgraph.DgraphProto;
 import io.dgraph.Transaction;
 import io.dgraph.wrapper.GeneralHelper;
 import io.dgraph.wrapper.model.SimpleEdge;
-import io.dgraph.wrapper.model.VertxBase;
+import io.dgraph.wrapper.model.VertexBase;
 import java.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +22,7 @@ public class MutationSet {
    * @param client
    * @param obj
    */
-  public static String setVertx(DgraphClient client, VertxBase obj) {
+  public static String setVertx(DgraphClient client, VertexBase obj) {
     if (null == obj) {
       return null;
     }
@@ -64,17 +64,17 @@ public class MutationSet {
    * @param client
    * @param list
    */
-  public static Collection<VertxBase> setVertx(DgraphClient client, Collection<VertxBase> list) {
+  public static Collection<VertexBase> setVertx(DgraphClient client, Collection<VertexBase> list) {
     if (null == list || list.size() == 0) {
       return null;
     }
 
     // set stub variable for uid
     int i = 0;
-    Map<String, VertxBase> varUidMap = new HashMap<>();
-    Iterator<VertxBase> iter = list.iterator();
+    Map<String, VertexBase> varUidMap = new HashMap<>();
+    Iterator<VertexBase> iter = list.iterator();
     while (iter.hasNext()) {
-      VertxBase dt = iter.next();
+      VertexBase dt = iter.next();
       if (null == dt.getUid()) {
         String varUid = "var" + (i++);
         dt.setUid("_:" + varUid);

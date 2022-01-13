@@ -110,6 +110,19 @@ public class SchemaHelper {
   }
 
   /**
+   * 
+   * @param client
+   * @param edgeType
+   * @param needReverse
+   */
+  public static void alterEdge(DgraphClient client, String edgeType, boolean needReverse){
+    String schema = String.format("%s uid %s .", edgeType, needReverse?"@reverse":"");
+    DgraphProto.Operation op =
+            DgraphProto.Operation.newBuilder().setSchema(schema).build();
+    client.alter(op);
+  }
+
+  /**
    * set raw dgraph schema
    *
    * @param client

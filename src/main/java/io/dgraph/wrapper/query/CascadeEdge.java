@@ -1,20 +1,20 @@
 package io.dgraph.wrapper.query;
 
-import io.dgraph.wrapper.model.VertxBase;
+import io.dgraph.wrapper.model.VertexBase;
 
 /** */
-public class EdgeToFilter {
+public class CascadeEdge {
   private String edgeType;
-  private VertxBase toVertx;
+  private VertexBase otherVertx;
   private boolean reverse = false;
 
-  public EdgeToFilter(String edgeType, VertxBase toVertx) {
+  public CascadeEdge(String edgeType, VertexBase toVertx) {
     this(edgeType, toVertx, false);
   }
 
-  public EdgeToFilter(String edgeType, VertxBase toVertx, boolean reverse) {
+  public CascadeEdge(String edgeType, VertexBase toVertx, boolean reverse) {
     setEdgeType(edgeType);
-    setToVertx(toVertx);
+    setOtherVertx(toVertx);
     setReverse(reverse);
   }
 
@@ -26,12 +26,12 @@ public class EdgeToFilter {
     this.edgeType = edgeType;
   }
 
-  public VertxBase getToVertx() {
-    return toVertx;
+  public VertexBase getOtherVertx() {
+    return otherVertx;
   }
 
-  public void setToVertx(VertxBase toVertx) {
-    this.toVertx = toVertx;
+  public void setOtherVertx(VertexBase otherVertx) {
+    this.otherVertx = otherVertx;
   }
 
   public boolean isReverse() {

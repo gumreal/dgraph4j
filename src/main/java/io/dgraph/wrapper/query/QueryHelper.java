@@ -7,7 +7,7 @@ import com.google.gson.JsonObject;
 import io.dgraph.DgraphClient;
 import io.dgraph.DgraphProto;
 import io.dgraph.wrapper.GeneralHelper;
-import io.dgraph.wrapper.model.VertxBase;
+import io.dgraph.wrapper.model.VertexBase;
 import java.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,8 +22,8 @@ public class QueryHelper {
    * @param obj
    * @return
    */
-  public static VertxBase getVertxByUid(
-      DgraphClient client, VertxBase obj, Collection<EdgeToFilter> filters) {
+  public static VertexBase getVertxByUid(
+          DgraphClient client, VertexBase obj, Collection<CascadeEdge> filters) {
     // check
     if (null == client) {
       LOGGER.warn("invalid dgraph client");
@@ -33,16 +33,16 @@ public class QueryHelper {
       LOGGER.warn("invalid vertx");
       return null;
     }
-    int validFilterCount = 0;
+    int validCascadeCount = 0;
     if (null != filters && filters.size() > 0) {
-      Iterator<EdgeToFilter> iter = filters.iterator();
+      Iterator<CascadeEdge> iter = filters.iterator();
       while (iter.hasNext()) {
-        EdgeToFilter f = iter.next();
-        if (GeneralHelper.isEmpty(f.getEdgeType()) || null == f.getToVertx()) {
-          LOGGER.warn("invalid EdgeToFilter");
+        CascadeEdge f = iter.next();
+        if (GeneralHelper.isEmpty(f.getEdgeType()) || null == f.getOtherVertx()) {
+          LOGGER.warn("invalid CascadeEdge");
           return null;
         } else {
-          validFilterCount++;
+          validCascadeCount++;
         }
       }
     }
@@ -54,7 +54,7 @@ public class QueryHelper {
             obj.getClass().getSimpleName(),
             obj.getUid(),
             getQueryPredicateStr(obj.getPredicates(), false, 2),
-            validFilterCount > 0 ? getEdgeVertxQueryPredicates(filters, 2) : "");
+            validCascadeCount > 0 ? getEdgeVertxQueryPredicates(filters, 2) : "");
     LOGGER.debug(dql);
 
     // query
@@ -102,7 +102,7 @@ public class QueryHelper {
    * @return
    */
   protected static String getEdgeVertxQueryPredicates(
-      Collection<EdgeToFilter> filters, int indentLevel) {
+          Collection<CascadeEdge> filters, int indentLevel) {
     if (null == filters || filters.size() == 0) {
       return "";
     }
@@ -111,13 +111,13 @@ public class QueryHelper {
     String prefixObj = GeneralHelper.getIndentPrefix(indentLevel);
     filters.forEach(
         f -> {
-          if (null == f || GeneralHelper.isEmpty(f.getEdgeType()) || null == f.getToVertx()) {
+          if (null == f || GeneralHelper.isEmpty(f.getEdgeType()) || null == f.getOtherVertx()) {
             return;
           }
 
-          buffer.append(prefixObj + f.getEdgeType() + "{\n");
+          buffer.append(prefixObj + (f.isReverse()?"~":"") + f.getEdgeType() + "{\n");
           buffer.append(
-              getQueryPredicateStr(f.getToVertx().getPredicates(), true, indentLevel + 1));
+              getQueryPredicateStr(f.getOtherVertx().getPredicates(), true, indentLevel + 1));
           buffer.append(prefixObj + "}\n");
         });
     return buffer.toString();

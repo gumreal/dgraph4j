@@ -1,7 +1,8 @@
 package io.dgraph.wrapper;
 
+import com.google.gson.Gson;
 import io.dgraph.DgraphClient;
-import io.dgraph.wrapper.model.VertxBase;
+import io.dgraph.wrapper.model.VertexBase;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -21,7 +22,7 @@ public class TestBase {
   }
 
   /** */
-  public static class Bundle extends VertxBase {
+  public static class Bundle extends VertexBase {
     private String bundleName;
     private List<Country> release_in;
 
@@ -62,7 +63,7 @@ public class TestBase {
   }
 
   /** */
-  public static class Country extends VertxBase {
+  public static class Country extends VertexBase {
     private String country;
 
     /**
@@ -82,6 +83,10 @@ public class TestBase {
         predicates.add("country");
       }
       return predicates;
+    }
+
+    public static VertexBase fromJson(String jsonStr) {
+      return new Gson().fromJson(jsonStr, Country.class);
     }
 
     public String getCountry() {

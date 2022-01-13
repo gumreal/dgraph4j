@@ -2,7 +2,7 @@ package io.dgraph.wrapper.query;
 
 import io.dgraph.DgraphClient;
 import io.dgraph.wrapper.TestBase;
-import io.dgraph.wrapper.model.VertxBase;
+import io.dgraph.wrapper.model.VertexBase;
 import io.dgraph.wrapper.mutation.MutationSet;
 import java.util.*;
 import org.testng.Assert;
@@ -29,13 +29,13 @@ public class QueryHelperTest extends TestBase {
       MutationSet.setEdges(client, bundleUid, edgeType, countries);
 
       // query
-      List<EdgeToFilter> edgeFilters = new ArrayList<>();
-      edgeFilters.add(new EdgeToFilter(edgeType, new Country()));
+      List<CascadeEdge> edgeFilters = new ArrayList<>();
+      edgeFilters.add(new CascadeEdge(edgeType, new Country()));
 
       Bundle toQuery = new Bundle();
       toQuery.setUid(bundleUid);
 
-      VertxBase vertx = QueryHelper.getVertxByUid(getClient(), toQuery, edgeFilters);
+      VertexBase vertx = QueryHelper.getVertxByUid(getClient(), toQuery, edgeFilters);
       Assert.assertNotNull(vertx);
       System.out.println(vertx.toJson());
       Assert.assertTrue(vertx instanceof Bundle);

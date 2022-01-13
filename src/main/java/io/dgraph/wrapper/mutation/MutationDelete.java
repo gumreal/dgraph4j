@@ -12,7 +12,7 @@ public class MutationDelete {
   private static Logger LOGGER = LoggerFactory.getLogger(MutationDelete.class.getSimpleName());
 
   /**
-   * { delete { <0x4e6f> <release_in> <0x4e70> . } }
+   * TODO { delete { <0x4e6f> <release_in> <0x4e70> . } }
    *
    * @param client
    * @param uid

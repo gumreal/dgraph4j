@@ -22,7 +22,7 @@ public class QueryHelper {
    * @param obj
    * @return
    */
-  public static VertexBase getVertxByUid(
+  public static VertexBase getVertexByUid(
       DgraphClient client, VertexBase obj, Collection<CascadeEdge> filters) {
     // check
     if (null == client) {
@@ -50,7 +50,7 @@ public class QueryHelper {
     // dql
     String dql =
         String.format(
-            DQL_vertx_get,
+            DQL_vertex_get,
             obj.getClass().getSimpleName(),
             obj.getUid(),
             getQueryPredicateStr(obj.getPredicates(), false, 2),
@@ -123,8 +123,48 @@ public class QueryHelper {
     return buffer.toString();
   }
 
-  private static String DQL_vertx_get =
+  private static String DQL_vertex_get =
       "{\n" + "   %s(func:uid(%s)){\n" + "%s\n" + "%s\n" + "   }\n" + "}";
+
+  /**
+   * @param client
+   * @param predicate
+   * @param v
+   * @return
+   */
+  public static List<String> getUidByPredicate(DgraphClient client, String predicate, String v) {
+    if (null == client || GeneralHelper.isEmpty(predicate) || GeneralHelper.isEmpty(v)) {
+      LOGGER.warn("invalid input");
+      return null;
+    }
+
+    String dql = String.format(DQL_uid_get_by_predicate, predicate, predicate, v, predicate);
+    LOGGER.debug(dql);
+
+    // query
+    DgraphProto.Response res = client.newTransaction().query(dql);
+    String resultStr = res.getJson().toStringUtf8();
+    LOGGER.debug(resultStr);
+
+    // parse result
+    JsonObject jo = new Gson().fromJson(resultStr, JsonObject.class);
+    if (null == jo || !jo.has(predicate)) {
+      return null;
+    }
+
+    List<String> resultArr = new ArrayList<>();
+    JsonArray ja = jo.get(predicate).getAsJsonArray();
+    if (null == ja || ja.size() == 0) {
+      return resultArr;
+    }
+    for (int i = 0; i < ja.size(); i++) {
+      resultArr.add(ja.get(i).getAsJsonObject().get("uid").getAsString());
+    }
+    return resultArr;
+  }
+
+  private static String DQL_uid_get_by_predicate =
+      "{\n" + "\t%s(func:eq(%s, \"%s\")){\n" + "\t\tuid\n" + "\t\t%s\n" + "\t}\n" + "}";
 
   /**
    * [ref SQL] <br>
@@ -136,7 +176,7 @@ public class QueryHelper {
    * @param edge
    * @return
    */
-  public static Map<String, Long> vertxEdgeCount(
+  public static Map<String, Long> vertexEdgeCount(
       DgraphClient client, String vertx, Set<String> values, String edge) {
     // check
     if (!checkInput(client, vertx, values, edge)) {

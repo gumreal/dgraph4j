@@ -35,7 +35,7 @@ public class QueryHelperTest extends TestBase {
       Bundle toQuery = new Bundle();
       toQuery.setUid(bundleUid);
 
-      VertexBase vertex = QueryHelper.getVertxByUid(client, toQuery, cascadeEdges);
+      VertexBase vertex = QueryHelper.getVertexByUid(client, toQuery, cascadeEdges);
       Assert.assertNotNull(vertex);
       System.out.println(vertex.toJson());
       Assert.assertTrue(vertex instanceof Bundle);
@@ -48,7 +48,7 @@ public class QueryHelperTest extends TestBase {
       Country c1 = new Country();
       c1.setUid(country_1_Uid);
 
-      vertex = QueryHelper.getVertxByUid(client, c1, cascadeEdges);
+      vertex = QueryHelper.getVertexByUid(client, c1, cascadeEdges);
       Assert.assertNotNull(vertex);
       System.out.println(vertex.toJson());
       Assert.assertTrue(vertex instanceof Country);
@@ -61,10 +61,22 @@ public class QueryHelperTest extends TestBase {
   }
 
   @Test
+  public void testGetByPredicate() {
+    try {
+      List<String> result = QueryHelper.getUidByPredicate(getClient(), "country", "country_0");
+      System.out.println("getUidByPredicate result: " + result.toString());
+      Assert.assertNotNull(result);
+    } catch (Exception e) {
+      e.printStackTrace();
+      Assert.assertTrue(false);
+    }
+  }
+
+  @Test
   public void testNodeEdgeCount() {
     try {
       Map<String, Long> map =
-          QueryHelper.vertxEdgeCount(getClient(), "country", getCountries(), "geo_has_device");
+          QueryHelper.vertexEdgeCount(getClient(), "country", getCountries(), "geo_has_device");
       Assert.assertNotNull(map);
 
       System.out.println("nodeEdgeCount result:");

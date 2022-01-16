@@ -77,7 +77,7 @@ public class MutationDelete {
   }
 
   /**
-   * Delete all the specified type edges of one vertex
+   * Delete all the specified type edge of one vertex
    *
    * @param client
    * @param uid
@@ -88,6 +88,40 @@ public class MutationDelete {
     try {
       DgraphProto.Mutation mu =
           Helpers.deleteEdges(DgraphProto.Mutation.newBuilder().build(), uid, edgeType);
+      System.out.println(mu);
+
+      DgraphProto.Response res = txn.mutate(mu);
+      txn.commit();
+      LOGGER.debug(res.toString());
+
+    } finally {
+      txn.discard();
+    }
+  }
+
+  /**
+   * Delete all the specified types of edges of one vertex
+   *
+   * @param client
+   * @param uid
+   * @param edgeTypes
+   */
+  public static void deleteEdgePredicates(
+      DgraphClient client, String uid, Collection<String> edgeTypes) {
+    Transaction txn = client.newTransaction();
+    try {
+      DgraphProto.Mutation.Builder b = DgraphProto.Mutation.newBuilder();
+      Iterator<String> iter = edgeTypes.iterator();
+      while (iter.hasNext()) {
+        String et = iter.next();
+        b.addDel(
+            DgraphProto.NQuad.newBuilder()
+                .setSubject(uid)
+                .setPredicate(et)
+                .setObjectValue(DgraphProto.Value.newBuilder().setDefaultVal("_STAR_ALL").build())
+                .build());
+      }
+      DgraphProto.Mutation mu = b.build();
       System.out.println(mu);
 
       DgraphProto.Response res = txn.mutate(mu);

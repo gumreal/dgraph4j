@@ -26,6 +26,7 @@ public class TestBase {
   public static class Bundle extends VertexBase {
     private String bundleName;
     private List<Country> release_in;
+    private List<Country> develop_in;
 
     /**
      * @param bundleName
@@ -65,6 +66,14 @@ public class TestBase {
 
     public void setRelease_in(List<Country> release_in) {
       this.release_in = release_in;
+    }
+
+    public List<Country> getDevelop_in() {
+      return develop_in;
+    }
+
+    public void setDevelop_in(List<Country> develop_in) {
+      this.develop_in = develop_in;
     }
   }
 

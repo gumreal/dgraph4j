@@ -23,7 +23,12 @@ public class MutationDeleteTest extends TestBase {
           MutationSet.setVertx(client, TestBase.Bundle.newBundle("bundle.testDeleteEdge"));
       String country_1_Uid =
           MutationSet.setVertx(client, TestBase.Country.newCountry("country.01.testDeleteEdge"));
-      MutationSet.setEdge(client, bundleUid, edgeType, country_1_Uid);
+      String country_2_Uid =
+          MutationSet.setVertx(client, TestBase.Country.newCountry("country.02.testDeleteEdge"));
+      List<String> edges = new ArrayList<>();
+      edges.add(country_1_Uid);
+      edges.add(country_2_Uid);
+      MutationSet.setEdges(client, bundleUid, edgeType, edges);
 
       // query
       List<CascadeEdge> cascadeEdges = new ArrayList<>();
@@ -35,7 +40,7 @@ public class MutationDeleteTest extends TestBase {
       VertexBase vertex = QueryHelper.getVertexByUid(client, toQuery, cascadeEdges);
       Assert.assertNotNull(vertex);
       Assert.assertTrue(vertex instanceof TestBase.Bundle);
-      Assert.assertEquals(((TestBase.Bundle) vertex).getRelease_in().size(), 1);
+      Assert.assertEquals(((TestBase.Bundle) vertex).getRelease_in().size(), 2);
 
       // delete
       MutationDelete.deleteEdge(client, bundleUid, edgeType, country_1_Uid);
@@ -44,7 +49,7 @@ public class MutationDeleteTest extends TestBase {
       vertex = QueryHelper.getVertexByUid(client, toQuery, cascadeEdges);
       Assert.assertNotNull(vertex);
       Assert.assertTrue(vertex instanceof TestBase.Bundle);
-      Assert.assertEquals(((TestBase.Bundle) vertex).getRelease_in().size(), 0);
+      Assert.assertEquals(((TestBase.Bundle) vertex).getRelease_in().size(), 1);
 
     } catch (Exception e) {
       e.printStackTrace();

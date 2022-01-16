@@ -28,12 +28,14 @@ public class MutationDelete {
                   DgraphProto.NQuad.newBuilder()
                       .setSubject(uid)
                       .setPredicate(edgeType)
-                      .setObjectValue(DgraphProto.Value.newBuilder().setDefaultVal(toUid).build())
+                      .setObjectId(toUid)
                       .build());
-      DgraphProto.Response res = txn.mutate(b.build());
-      LOGGER.debug(res.toString());
-      System.out.println(res);
+      DgraphProto.Mutation mu = b.build();
+      System.out.println(mu);
+
+      DgraphProto.Response res = txn.mutate(mu);
       txn.commit();
+      LOGGER.debug(res.toString());
 
     } finally {
       txn.discard();

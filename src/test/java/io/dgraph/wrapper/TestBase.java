@@ -48,7 +48,6 @@ public class TestBase {
     }
 
     public static Bundle fromJson(String jsonStr) {
-      System.out.println("Bundle.fromJson");
       return new Gson().fromJson(jsonStr, Bundle.class);
     }
 

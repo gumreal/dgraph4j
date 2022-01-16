@@ -37,7 +37,11 @@ public class MutationDeleteTest extends TestBase {
     MutationSet.setEdge(client, bundleUid, edgeType2, country_1_Uid);
 
     // done with uid array
-    return new String[] {bundleUid, country_1_Uid, country_2_Uid};
+    String[] resultUids = new String[] {bundleUid, country_1_Uid, country_2_Uid};
+    System.out.println(
+        String.format(
+            "[bundle]%s [country1]%s [country2]%s", bundleUid, country_1_Uid, country_2_Uid));
+    return resultUids;
   }
 
   @Test
@@ -188,6 +192,43 @@ public class MutationDeleteTest extends TestBase {
       Assert.assertTrue(vertex instanceof TestBase.Bundle);
       Assert.assertNull(((TestBase.Bundle) vertex).getRelease_in());
       Assert.assertNull(((TestBase.Bundle) vertex).getDevelop_in());
+
+      // TODO clear stub
+
+    } catch (Exception e) {
+      e.printStackTrace();
+      Assert.assertTrue(false);
+    }
+  }
+
+  @Test
+  public void testDeleteVertx() {
+    try {
+      DgraphClient client = getClient();
+
+      // stub
+      String[] uids = stubVertexEdges(client);
+      Assert.assertEquals(uids.length, 3);
+
+      // query
+      List<CascadeEdge> cascadeEdges = new ArrayList<>();
+      cascadeEdges.add(new CascadeEdge(edgeType1, new TestBase.Country()));
+      cascadeEdges.add(new CascadeEdge(edgeType2, new TestBase.Country()));
+      TestBase.Bundle toQuery = new TestBase.Bundle();
+      toQuery.setUid(uids[0]);
+
+      VertexBase vertex = QueryHelper.getVertexByUid(client, toQuery, cascadeEdges);
+      Assert.assertNotNull(vertex);
+      Assert.assertTrue(vertex instanceof TestBase.Bundle);
+      Assert.assertEquals(((TestBase.Bundle) vertex).getRelease_in().size(), 2);
+      Assert.assertEquals(((TestBase.Bundle) vertex).getDevelop_in().size(), 1);
+
+      // delete
+      MutationDelete.deleteVertex(client, uids[0]);
+
+      // query after delete
+      vertex = QueryHelper.getVertexByUid(client, toQuery, cascadeEdges);
+      Assert.assertNull(vertex);
 
       // TODO clear stub
 

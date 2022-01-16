@@ -36,7 +36,6 @@ public abstract class VertexBase implements Serializable {
    * @return
    */
   public VertexBase transformToJson(String jsonStr) {
-    System.out.println(jsonStr);
     return new Gson().fromJson(jsonStr, this.getClass());
   }
 

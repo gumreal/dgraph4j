@@ -1,7 +1,5 @@
 package io.dgraph.wrapper.schema;
 
-import static org.testng.Assert.*;
-
 import io.dgraph.wrapper.TestBase;
 import io.dgraph.wrapper.model.DataType;
 import io.dgraph.wrapper.model.StringIndexType;

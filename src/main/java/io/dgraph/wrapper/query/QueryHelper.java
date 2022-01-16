@@ -68,6 +68,8 @@ public class QueryHelper {
     }
     JsonArray ja = je.getAsJsonArray();
     if (null == ja || ja.size() == 0) {
+      String log = String.format("[%s]%s: not found", obj.getClass().getSimpleName(), obj.getUid());
+      LOGGER.debug(log);
       return null;
     }
     String jsonStr = ja.get(0).getAsJsonObject().toString();

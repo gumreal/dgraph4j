@@ -1,5 +1,6 @@
 package io.dgraph.wrapper.mutation;
 
+import com.google.protobuf.ByteString;
 import io.dgraph.DgraphClient;
 import io.dgraph.DgraphProto;
 import io.dgraph.Helpers;
@@ -137,7 +138,24 @@ public class MutationDelete {
    * @param client
    * @param uid
    */
-  public void deleteVertex(DgraphClient client, String uid) {
-    // TODO
+  public static void deleteVertex(DgraphClient client, String uid) {
+    String dql = String.format(DQL_delete_vertex, uid);
+    Transaction txn = client.newTransaction();
+    try {
+      DgraphProto.Mutation mutation =
+          DgraphProto.Mutation.newBuilder().setDeleteJson(ByteString.copyFromUtf8(dql)).build();
+      DgraphProto.Response res = txn.mutate(mutation);
+      LOGGER.debug(res.toString());
+
+      txn.commit();
+
+    } catch (Exception e) {
+      LOGGER.error(e.getMessage());
+
+    } finally {
+      txn.discard();
+    }
   }
+
+  private static String DQL_delete_vertex = "{\n\t\"uid\":\"%s\"\n}";
 }

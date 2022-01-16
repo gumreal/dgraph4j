@@ -16,13 +16,21 @@ public class MutationSetTest extends TestBase {
   public void testSetObj() {
     TestBase.Bundle bundle = Bundle.newBundle("com.h");
     bundle.setUid("0x17");
+
+    DgraphClient client = null;
     try {
-      String uid = MutationSet.setVertx(getClient(), bundle);
+      client = getClient();
+      String uid = MutationSet.setVertx(client, bundle);
       Assert.assertNotNull(uid);
 
     } catch (WrapperException e) {
       e.printStackTrace();
       Assert.assertTrue(false);
+
+    } finally {
+      if (null != client) {
+        client.shutdown();
+      }
     }
   }
 
@@ -32,25 +40,30 @@ public class MutationSetTest extends TestBase {
     list.add(Bundle.newBundle("com.b"));
     list.add(Bundle.newBundle("com.c"));
 
+    DgraphClient client = null;
     try {
-      Collection<VertexBase> result = MutationSet.setVertx(getClient(), list);
+      client = getClient();
+      Collection<VertexBase> result = MutationSet.setVertx(client, list);
       Assert.assertNotNull(result);
       Assert.assertEquals(2, result.size());
       result.forEach(dt -> System.out.println("generated [uid]" + dt.getUid()));
     } catch (Exception e) {
       e.printStackTrace();
       Assert.assertTrue(false);
+    } finally {
+      if (null != client) {
+        client.shutdown();
+      }
     }
   }
 
   @Test
-  public void testSetJson() {}
-
-  @Test
   public void testSetEdge() {
     String edgeName = "release_in";
+
+    DgraphClient client = null;
     try {
-      DgraphClient client = getClient();
+      client = getClient();
       String bundleUid =
           MutationSet.setVertx(client, Bundle.newBundle("com." + System.currentTimeMillis()));
       String countryUid = MutationSet.setVertx(client, Country.newCountry("chn"));
@@ -62,6 +75,10 @@ public class MutationSetTest extends TestBase {
     } catch (WrapperException e) {
       e.printStackTrace();
       Assert.assertTrue(false);
+    } finally {
+      if (null != client) {
+        client.shutdown();
+      }
     }
   }
 }

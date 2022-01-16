@@ -12,8 +12,9 @@ public class QueryHelperTest extends TestBase {
 
   @Test
   public void testGetVertx() {
+    DgraphClient client = null;
     try {
-      DgraphClient client = getClient();
+      client = getClient();
 
       // stub
       String edgeType = "release_in";
@@ -57,18 +58,28 @@ public class QueryHelperTest extends TestBase {
     } catch (Exception e) {
       e.printStackTrace();
       Assert.assertTrue(false);
+    } finally {
+      if (null != client) {
+        client.shutdown();
+      }
     }
   }
 
   @Test
   public void testGetByPredicate() {
+    DgraphClient client = null;
     try {
-      List<String> result = QueryHelper.getUidByPredicate(getClient(), "country", "country_0");
+      client = getClient();
+      List<String> result = QueryHelper.getUidByPredicate(client, "country", "country_0");
       System.out.println("getUidByPredicate result: " + result.toString());
       Assert.assertNotNull(result);
     } catch (Exception e) {
       e.printStackTrace();
       Assert.assertTrue(false);
+    } finally {
+      if (null != client) {
+        client.shutdown();
+      }
     }
   }
 
@@ -79,21 +90,29 @@ public class QueryHelperTest extends TestBase {
     map.put("ext", "ext01");
     map.put("e1", "e1_v");
 
+    DgraphClient client = null;
     try {
-      List<String> result = QueryHelper.getUidByPredicates(getClient(), map);
+      client = getClient();
+      List<String> result = QueryHelper.getUidByPredicates(client, map);
       System.out.println("getUidByPredicates result: " + result.toString());
       Assert.assertNotNull(result);
     } catch (Exception e) {
       e.printStackTrace();
       Assert.assertTrue(false);
+    } finally {
+      if (null != client) {
+        client.shutdown();
+      }
     }
   }
 
   @Test
   public void testNodeEdgeCount() {
+    DgraphClient client = null;
     try {
+      client = getClient();
       Map<String, Long> map =
-          QueryHelper.vertexEdgeCount(getClient(), "country", getCountries(), "geo_has_device");
+          QueryHelper.vertexEdgeCount(client, "country", getCountries(), "geo_has_device");
       Assert.assertNotNull(map);
 
       System.out.println("nodeEdgeCount result:");
@@ -103,42 +122,64 @@ public class QueryHelperTest extends TestBase {
       System.out.println("");
     } catch (Exception e) {
       e.printStackTrace();
+    } finally {
+      if (null != client) {
+        client.shutdown();
+      }
     }
   }
 
   @Test
   public void testNodeEdgeCountSum() {
+    DgraphClient client = null;
     try {
+      client = getClient();
       Long result =
-          QueryHelper.vertxEdgeCountSum(getClient(), "country", getCountries(), "geo_has_device");
+          QueryHelper.vertxEdgeCountSum(client, "country", getCountries(), "geo_has_device");
       Assert.assertNotNull(result);
       System.out.println(String.format("nodeEdgeCountSum -> %d", result));
     } catch (Exception e) {
       e.printStackTrace();
+    } finally {
+      if (null != client) {
+        client.shutdown();
+      }
     }
   }
 
   @Test
   public void testIntersectCount() {
+    DgraphClient client = null;
     try {
-      Long result = QueryHelper.intersectCount(getClient(), getFilters());
+      client = getClient();
+      Long result = QueryHelper.intersectCount(client, getFilters());
       Assert.assertNotNull(result);
       Assert.assertNotNull(result);
       System.out.println(String.format("intersectCount -> %d", result));
     } catch (Exception e) {
       e.printStackTrace();
+    } finally {
+      if (null != client) {
+        client.shutdown();
+      }
     }
   }
 
   @Test
   public void testUnionCount() {
+    DgraphClient client = null;
     try {
-      Long result = QueryHelper.unionCount(getClient(), getFilters());
+      client = getClient();
+      Long result = QueryHelper.unionCount(client, getFilters());
       Assert.assertNotNull(result);
       Assert.assertNotNull(result);
       System.out.println(String.format("unionCount -> %d", result));
     } catch (Exception e) {
       e.printStackTrace();
+    } finally {
+      if (null != client) {
+        client.shutdown();
+      }
     }
   }
 

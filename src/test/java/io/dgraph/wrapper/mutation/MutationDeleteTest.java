@@ -46,8 +46,9 @@ public class MutationDeleteTest extends TestBase {
 
   @Test
   public void testDeleteEdge() {
+    DgraphClient client = null;
     try {
-      DgraphClient client = getClient();
+      client = getClient();
 
       // stub
       String[] uids = stubVertexEdges(client);
@@ -73,18 +74,24 @@ public class MutationDeleteTest extends TestBase {
       Assert.assertTrue(vertex instanceof TestBase.Bundle);
       Assert.assertEquals(((TestBase.Bundle) vertex).getRelease_in().size(), 1);
 
-      // TODO clear stub
+      // clear stub
+      clearStub(client, uids);
 
     } catch (Exception e) {
       e.printStackTrace();
       Assert.assertTrue(false);
+    } finally {
+      if (null != client) {
+        client.shutdown();
+      }
     }
   }
 
   @Test
   public void testDeleteEdges() {
+    DgraphClient client = null;
     try {
-      DgraphClient client = getClient();
+      client = getClient();
 
       // stub
       String[] uids = stubVertexEdges(client);
@@ -113,18 +120,24 @@ public class MutationDeleteTest extends TestBase {
       Assert.assertTrue(vertex instanceof TestBase.Bundle);
       Assert.assertNull(((TestBase.Bundle) vertex).getRelease_in());
 
-      // TODO clear stub
+      // clear stub
+      clearStub(client, uids);
 
     } catch (Exception e) {
       e.printStackTrace();
       Assert.assertTrue(false);
+    } finally {
+      if (null != client) {
+        client.shutdown();
+      }
     }
   }
 
   @Test
   public void testDeleteEdgePredicate() {
+    DgraphClient client = null;
     try {
-      DgraphClient client = getClient();
+      client = getClient();
 
       // stub
       String[] uids = stubVertexEdges(client);
@@ -150,18 +163,24 @@ public class MutationDeleteTest extends TestBase {
       Assert.assertTrue(vertex instanceof TestBase.Bundle);
       Assert.assertNull(((TestBase.Bundle) vertex).getRelease_in());
 
-      // TODO clear stub
+      // clear stub
+      clearStub(client, uids);
 
     } catch (Exception e) {
       e.printStackTrace();
       Assert.assertTrue(false);
+    } finally {
+      if (null != client) {
+        client.shutdown();
+      }
     }
   }
 
   @Test
   public void testDeleteEdgePredicates() {
+    DgraphClient client = null;
     try {
-      DgraphClient client = getClient();
+      client = getClient();
 
       // stub
       String[] uids = stubVertexEdges(client);
@@ -193,18 +212,24 @@ public class MutationDeleteTest extends TestBase {
       Assert.assertNull(((TestBase.Bundle) vertex).getRelease_in());
       Assert.assertNull(((TestBase.Bundle) vertex).getDevelop_in());
 
-      // TODO clear stub
+      // clear stub
+      clearStub(client, uids);
 
     } catch (Exception e) {
       e.printStackTrace();
       Assert.assertTrue(false);
+    } finally {
+      if (null != client) {
+        client.shutdown();
+      }
     }
   }
 
   @Test
   public void testDeleteVertx() {
+    DgraphClient client = null;
     try {
-      DgraphClient client = getClient();
+      client = getClient();
 
       // stub
       String[] uids = stubVertexEdges(client);
@@ -230,11 +255,16 @@ public class MutationDeleteTest extends TestBase {
       vertex = QueryHelper.getVertexByUid(client, toQuery, cascadeEdges);
       Assert.assertNull(vertex);
 
-      // TODO clear stub
+      // clear stub
+      clearStub(client, uids);
 
     } catch (Exception e) {
       e.printStackTrace();
       Assert.assertTrue(false);
+    } finally {
+      if (null != client) {
+        client.shutdown();
+      }
     }
   }
 }

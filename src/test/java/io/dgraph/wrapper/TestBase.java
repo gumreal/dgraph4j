@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 import io.dgraph.DgraphClient;
 import io.dgraph.wrapper.model.VertexBase;
+import io.dgraph.wrapper.mutation.MutationDelete;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -20,6 +21,16 @@ public class TestBase {
 
   protected DgraphClient getClient(String host, int port) throws WrapperException {
     return ClientBuilder.newInstance().withAlpha(host, port).build();
+  }
+
+  /**
+   * @param client
+   * @param uids
+   */
+  protected void clearStub(DgraphClient client, String[] uids) {
+    for (int i = 0; i < uids.length; i++) {
+      MutationDelete.deleteVertex(client, uids[i]);
+    }
   }
 
   /** */

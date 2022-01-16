@@ -2,8 +2,10 @@ package io.dgraph.wrapper.mutation;
 
 import io.dgraph.DgraphClient;
 import io.dgraph.DgraphProto;
+import io.dgraph.Helpers;
 import io.dgraph.Transaction;
 import java.util.Collection;
+import java.util.Iterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,7 +14,7 @@ public class MutationDelete {
   private static Logger LOGGER = LoggerFactory.getLogger(MutationDelete.class.getSimpleName());
 
   /**
-   * TODO { delete { <0x4e6f> <release_in> <0x4e70> . } }
+   * Delete an edge: uid --edgeType--> toUid
    *
    * @param client
    * @param uid
@@ -31,8 +33,6 @@ public class MutationDelete {
                       .setObjectId(toUid)
                       .build());
       DgraphProto.Mutation mu = b.build();
-      System.out.println(mu);
-
       DgraphProto.Response res = txn.mutate(mu);
       txn.commit();
       LOGGER.debug(res.toString());
@@ -42,36 +42,61 @@ public class MutationDelete {
     }
   }
 
-  private static String DQL_delete_one_edge =
-      "{\n"
-          + "\t\"delete\" : {\n"
-          + "\t\t\"uid\": \"%s\",\n"
-          + "\t\t\"%s\":[\n"
-          + "\t\t\t{\n"
-          + "\t\t\t\t\"uid\": \"%s\"\n"
-          + "\t\t\t}\t\n"
-          + "\t\t]\n"
-          + "\t}\n"
-          + "}";
-
   /**
+   * Delete edges: uid --edgeType--> toUids
+   *
    * @param client
    * @param uid
    * @param edgeType
    * @param toUids
    */
-  public void deleteEdges(
+  public static void deleteEdges(
       DgraphClient client, String uid, String edgeType, Collection<String> toUids) {
-    // TODO
+    Transaction txn = client.newTransaction();
+    try {
+      DgraphProto.Mutation.Builder b = DgraphProto.Mutation.newBuilder();
+      Iterator<String> iter = toUids.iterator();
+      while (iter.hasNext()) {
+        String toUid = iter.next();
+        b.addDel(
+            DgraphProto.NQuad.newBuilder()
+                .setSubject(uid)
+                .setPredicate(edgeType)
+                .setObjectId(toUid)
+                .build());
+      }
+
+      DgraphProto.Mutation mu = b.build();
+      DgraphProto.Response res = txn.mutate(mu);
+      txn.commit();
+      LOGGER.debug(res.toString());
+
+    } finally {
+      txn.discard();
+    }
   }
 
   /**
+   * Delete all the specified type edges of one vertex
+   *
    * @param client
    * @param uid
    * @param edgeType
    */
-  public void deleteEdges(DgraphClient client, String uid, String edgeType) {
-    // TODO
+  public static void deleteEdgePredicate(DgraphClient client, String uid, String edgeType) {
+    Transaction txn = client.newTransaction();
+    try {
+      DgraphProto.Mutation mu =
+          Helpers.deleteEdges(DgraphProto.Mutation.newBuilder().build(), uid, edgeType);
+      System.out.println(mu);
+
+      DgraphProto.Response res = txn.mutate(mu);
+      txn.commit();
+      LOGGER.debug(res.toString());
+
+    } finally {
+      txn.discard();
+    }
   }
 
   /**

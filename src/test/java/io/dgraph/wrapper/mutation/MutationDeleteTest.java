@@ -256,7 +256,26 @@ public class MutationDeleteTest extends TestBase {
       Assert.assertNull(vertex);
 
       // clear stub
-      clearStub(client, uids);
+      //      clearStub(client, uids);
+
+    } catch (Exception e) {
+      e.printStackTrace();
+      Assert.assertTrue(false);
+    } finally {
+      if (null != client) {
+        client.shutdown();
+      }
+    }
+  }
+
+  @Test
+  public void testDeleteVertx2() {
+    DgraphClient client = null;
+    try {
+      client = getClient();
+
+      // delete
+      MutationDelete.deleteVertex(client, "0xc35c");
 
     } catch (Exception e) {
       e.printStackTrace();

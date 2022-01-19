@@ -5,7 +5,6 @@ import com.google.gson.annotations.SerializedName;
 import io.dgraph.DgraphClient;
 import io.dgraph.wrapper.model.VertexBase;
 import io.dgraph.wrapper.mutation.MutationDelete;
-
 import java.util.*;
 
 /** */

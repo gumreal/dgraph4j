@@ -8,9 +8,8 @@ import io.dgraph.Transaction;
 import io.dgraph.wrapper.GeneralHelper;
 import io.dgraph.wrapper.model.SimpleEdge;
 import io.dgraph.wrapper.model.VertexBase;
-import java.util.*;
-
 import io.dgraph.wrapper.query.QueryHelper;
+import java.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,7 +28,6 @@ public class MutationSet {
   }
 
   /**
-   *
    * @param client
    * @param obj
    * @param upsert true: if the object parameter has no uid, query it first
@@ -41,11 +39,11 @@ public class MutationSet {
     }
 
     String uid = obj.getUid();
-    if(GeneralHelper.isEmpty(uid) && upsert){
-      //query uid
+    if (GeneralHelper.isEmpty(uid) && upsert) {
+      // query uid
       List<String> uids = QueryHelper.getUidByPredicates(client, obj.primaryPairs());
-      if(null != uids && uids.size()>0){
-        //TODO what if we get many vertex uid by these conditions?
+      if (null != uids && uids.size() > 0) {
+        // TODO what if we get many vertex uid by these conditions?
         obj.setUid(uids.get(0));
       }
     }
@@ -56,9 +54,9 @@ public class MutationSet {
     Transaction txn = client.newTransaction();
     try {
       DgraphProto.Mutation mutation =
-              DgraphProto.Mutation.newBuilder()
-                      .setSetJson(ByteString.copyFromUtf8(requestJson))
-                      .build();
+          DgraphProto.Mutation.newBuilder()
+              .setSetJson(ByteString.copyFromUtf8(requestJson))
+              .build();
       DgraphProto.Response res = txn.mutate(mutation);
       LOGGER.debug(res.toString());
 

@@ -20,12 +20,11 @@ public class MutationDeleteTest extends TestBase {
    */
   private String[] stubVertexEdges(DgraphClient client) {
     // vertex
-    String bundleUid =
-        MutationSet.setVertx(client, TestBase.Bundle.newBundle("bundle.testDeleteEdge"));
+    String bundleUid = MutationSet.setVertx(client, TestBase.Bundle.newBundle("bundle.stub"));
     String country_1_Uid =
-        MutationSet.setVertx(client, TestBase.Country.newCountry("country.01.testDeleteEdge"));
+        MutationSet.setVertx(client, TestBase.Country.newCountry("country.stub.01"));
     String country_2_Uid =
-        MutationSet.setVertx(client, TestBase.Country.newCountry("country.02.testDeleteEdge"));
+        MutationSet.setVertx(client, TestBase.Country.newCountry("country.stub.02"));
 
     // edge type 1
     List<String> objectUids = new ArrayList<>();
@@ -256,7 +255,7 @@ public class MutationDeleteTest extends TestBase {
       Assert.assertNull(vertex);
 
       // clear stub
-      //      clearStub(client, uids);
+      clearStub(client, uids);
 
     } catch (Exception e) {
       e.printStackTrace();

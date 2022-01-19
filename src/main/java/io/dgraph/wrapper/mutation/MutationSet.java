@@ -32,7 +32,7 @@ public class MutationSet {
    *
    * @param client
    * @param obj
-   * @param upsert
+   * @param upsert true: if the object parameter has no uid, query it first
    * @return
    */
   public static String setVertex(DgraphClient client, VertexBase obj, boolean upsert) {

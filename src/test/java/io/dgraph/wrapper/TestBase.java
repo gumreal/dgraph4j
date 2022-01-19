@@ -5,9 +5,8 @@ import com.google.gson.annotations.SerializedName;
 import io.dgraph.DgraphClient;
 import io.dgraph.wrapper.model.VertexBase;
 import io.dgraph.wrapper.mutation.MutationDelete;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+
+import java.util.*;
 
 /** */
 public class TestBase {
@@ -56,6 +55,13 @@ public class TestBase {
         predicates.add("bundleName");
       }
       return predicates;
+    }
+
+    @Override
+    public Map<String, String> primaryPairs() {
+      Map<String, String> map = new HashMap<>();
+      map.put("bundleName", getBundleName());
+      return map;
     }
 
     public static Bundle fromJson(String jsonStr) {
@@ -111,6 +117,13 @@ public class TestBase {
         predicates.add("country");
       }
       return predicates;
+    }
+
+    @Override
+    public Map<String, String> primaryPairs() {
+      Map<String, String> map = new HashMap<>();
+      map.put("country", getCountry());
+      return map;
     }
 
     public static VertexBase fromJson(String jsonStr) {

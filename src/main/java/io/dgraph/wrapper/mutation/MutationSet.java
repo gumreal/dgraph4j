@@ -44,7 +44,8 @@ public class MutationSet {
       List<String> uids = QueryHelper.getUidByPredicates(client, obj.primaryPairs());
       if (null != uids && uids.size() > 0) {
         // TODO what if we get many vertex uid by these conditions?
-        obj.setUid(uids.get(0));
+        uid = uids.get(0);
+        obj.setUid(uid);
       }
     }
 

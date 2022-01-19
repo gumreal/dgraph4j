@@ -50,8 +50,8 @@ public class QueryHelper {
             DQL_vertex_get,
             obj.getClass().getSimpleName(),
             obj.getUid(),
-            getQueryPredicateStr(obj.getPredicates(), false, 2),
-            validCascadeCount > 0 ? getEdgeVertxQueryPredicates(filters, 2) : "");
+            makeQueryPredicateStr(obj.getPredicates(), false, 2),
+            validCascadeCount > 0 ? makeEdgeVertxQueryPredicates(filters, 2) : "");
     LOGGER.debug(dql);
 
     // query
@@ -84,7 +84,7 @@ public class QueryHelper {
    * @param indentLevel
    * @return
    */
-  protected static String getQueryPredicateStr(
+  protected static String makeQueryPredicateStr(
       Set<String> predicates, boolean withUid, int indentLevel) {
     String linePrefix = GeneralHelper.getIndentPrefix(indentLevel);
     StringBuffer buffer = new StringBuffer();
@@ -100,7 +100,7 @@ public class QueryHelper {
    * @param indentLevel
    * @return
    */
-  protected static String getEdgeVertxQueryPredicates(
+  protected static String makeEdgeVertxQueryPredicates(
       Collection<CascadeEdge> filters, int indentLevel) {
     if (null == filters || filters.size() == 0) {
       return "";
@@ -116,7 +116,7 @@ public class QueryHelper {
 
           buffer.append(prefixObj + (f.isReverse() ? "~" : "") + f.getEdgeType() + "{\n");
           buffer.append(
-              getQueryPredicateStr(f.getOtherVertx().getPredicates(), true, indentLevel + 1));
+              makeQueryPredicateStr(f.getOtherVertx().getPredicates(), true, indentLevel + 1));
           buffer.append(prefixObj + "}\n");
         });
     return buffer.toString();

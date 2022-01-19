@@ -3,6 +3,7 @@ package io.dgraph.wrapper.model;
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
+import java.util.Map;
 import java.util.Set;
 
 /** Dgraph Custom Data Type */
@@ -57,6 +58,13 @@ public abstract class VertexBase implements Serializable {
    * @return
    */
   public abstract Set<String> getPredicates();
+
+  /**
+   * get all properties and their values map, for lookup the vertex in dgraph
+   *
+   * @return
+   */
+  public abstract Map<String, String> primaryPairs();
 
   public String getDgraphType() {
     return dgraphType;

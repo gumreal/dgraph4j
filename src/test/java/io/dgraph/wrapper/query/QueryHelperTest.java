@@ -18,11 +18,11 @@ public class QueryHelperTest extends TestBase {
 
       // stub
       String edgeType = "release_in";
-      String bundleUid = MutationSet.setVertx(client, Bundle.newBundle("bundle.test.get.vertx"));
+      String bundleUid = MutationSet.setVertex(client, Bundle.newBundle("bundle.test.get.vertx"));
       String country_1_Uid =
-          MutationSet.setVertx(client, Country.newCountry("country.01.test.get.vertx"));
+          MutationSet.setVertex(client, Country.newCountry("country.01.test.get.vertx"));
       String country_2_Uid =
-          MutationSet.setVertx(client, Country.newCountry("country.02.test.get.vertx"));
+          MutationSet.setVertex(client, Country.newCountry("country.02.test.get.vertx"));
 
       List<String> countries = new ArrayList<>();
       countries.add(country_1_Uid);

@@ -23,7 +23,7 @@ public class MutationSet {
    * @param client
    * @param obj
    */
-  public static String setVertx(DgraphClient client, VertexBase obj) {
+  public static String setVertex(DgraphClient client, VertexBase obj) {
     return setVertex(client, obj, false);
   }
 
@@ -65,6 +65,7 @@ public class MutationSet {
       if (null != uidsMap && uidsMap.size() == 1) {
         for (String s : uidsMap.values()) {
           uid = s;
+          obj.setUid(uid);
           break;
         }
       }
@@ -85,7 +86,7 @@ public class MutationSet {
    * @param client
    * @param list
    */
-  public static Collection<VertexBase> setVertx(DgraphClient client, Collection<VertexBase> list) {
+  public static Collection<VertexBase> setVertex(DgraphClient client, Collection<VertexBase> list) {
     if (null == list || list.size() == 0) {
       return null;
     }

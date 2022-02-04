@@ -15,7 +15,7 @@ public class MutationDelete {
   private static Logger LOGGER = LoggerFactory.getLogger(MutationDelete.class.getSimpleName());
 
   /**
-   * Delete an edge: uid --edgeType--> toUid
+   * Delete an edge: uid --edgeType-- toUid
    *
    * @param client
    * @param uid
@@ -44,7 +44,7 @@ public class MutationDelete {
   }
 
   /**
-   * Delete edges: uid --edgeType--> toUids
+   * Delete edges: uid --edgeType-- toUids
    *
    * @param client
    * @param uid

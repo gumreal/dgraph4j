@@ -76,7 +76,6 @@ public class SchemaHelper {
    * @param dt
    * @param createIndex
    * @param indexName
-   * @return
    */
   protected static void alterPredicate(
       DgraphClient client, String predicate, DataType dt, boolean createIndex, String indexName) {

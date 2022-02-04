@@ -140,7 +140,7 @@ public class MutationSet {
   }
 
   /**
-   * Create Edge: fromUid --edgeType--> toUid
+   * Create Edge: fromUid --edgeType-- toUid
    *
    * @param client
    * @param fromUid
@@ -156,7 +156,7 @@ public class MutationSet {
   }
 
   /**
-   * Create Edges: fromUid --edgeType--> toUids
+   * Create Edges: fromUid --edgeType-- toUids
    *
    * @param client
    * @param fromUid

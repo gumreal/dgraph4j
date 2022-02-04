@@ -68,22 +68,22 @@ public class SchemaHelperTest extends TestBase {
   }
 
   String test_schema =
-      "bundleName:string @index(exact) .\n" +
-              "ext:string @index(exact) .\n" +
-              "e1:string .\n" +
-              "release_in:[uid] @reverse @count .\n" +
-              "develop_in:[uid] @reverse .\n" +
-              "\n" +
-              "type Bundle {\n" +
-              "  bundleName:string\n" +
-              "  ext:string\n" +
-              "  e1:string\n" +
-              "  release_in:Country\n" +
-              "  develop_in:Country\n" +
-              "}\n" +
-              "\n" +
-              "country:string @index(exact) .\n" +
-              "type Country{\n" +
-              "\tcountry\n" +
-              "}";
+      "bundleName:string @index(exact) .\n"
+          + "ext:string @index(exact) .\n"
+          + "e1:string .\n"
+          + "release_in:[uid] @reverse @count .\n"
+          + "develop_in:[uid] @reverse .\n"
+          + "\n"
+          + "type Bundle {\n"
+          + "  bundleName:string\n"
+          + "  ext:string\n"
+          + "  e1:string\n"
+          + "  release_in:Country\n"
+          + "  develop_in:Country\n"
+          + "}\n"
+          + "\n"
+          + "country:string @index(exact) .\n"
+          + "type Country{\n"
+          + "\tcountry\n"
+          + "}";
 }

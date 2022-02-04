@@ -33,7 +33,7 @@ public class GeneralHelper {
   /**
    * implode collection items to a single string <br>
    * for example<br>
-   * List(a, b) => prefix + itemPrefix + "a" + itemSuffix + split + itemPrefix + "b" + itemSuffix +
+   * List(a, b) = prefix + itemPrefix + "a" + itemSuffix + split + itemPrefix + "b" + itemSuffix +
    * suffix
    *
    * @param coll

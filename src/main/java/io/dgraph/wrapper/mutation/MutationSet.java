@@ -211,6 +211,65 @@ public class MutationSet {
   private static final String DQL_set_edge = "{\n" + "   \"set\":%s\n" + "}";
 
   /**
+   * @param client
+   * @param fromUid
+   * @param edgeType
+   * @param toUid
+   * @param facetMap
+   * @return
+   */
+  public static boolean setEdge(
+      DgraphClient client,
+      String fromUid,
+      String edgeType,
+      String toUid,
+      Map<String, Object> facetMap) {
+    if (GeneralHelper.isEmpty(fromUid) || GeneralHelper.isEmpty(edgeType)) {
+      return false;
+    }
+
+    StringBuffer buffer = new StringBuffer();
+    buffer.append(String.format("<%s> <%s> <%s> ", fromUid, edgeType, toUid));
+    if (null != facetMap && facetMap.size() > 0) {
+      buffer.append("(");
+      int facetCount = 0;
+      for (String k : facetMap.keySet()) {
+        Object v = facetMap.get(k);
+        if (null != v) {
+          if (1 < facetCount++) {
+            buffer.append(", ");
+          }
+          buffer.append(String.format("%s=%s", k, v));
+        }
+      }
+      buffer.append(")");
+    }
+    buffer.append(" .");
+    String nquadStr = buffer.toString();
+    LOGGER.debug("Nquad: " + nquadStr);
+
+    Transaction txn = client.newTransaction();
+    try {
+      DgraphProto.Mutation mu =
+          DgraphProto.Mutation.newBuilder().setSetNquads(ByteString.copyFromUtf8(nquadStr)).build();
+      DgraphProto.Request request =
+          DgraphProto.Request.newBuilder().addMutations(mu).setCommitNow(true).build();
+      DgraphProto.Response res = txn.doRequest(request);
+      LOGGER.debug(res.toString());
+
+    } catch (Exception e) {
+      LOGGER.error(e.getMessage());
+      return false;
+
+    } finally {
+      txn.discard();
+    }
+
+    // done
+    return true;
+  }
+
+  /**
    * send raw json for Set Command
    *
    * @param client
@@ -237,5 +296,41 @@ public class MutationSet {
     }
 
     return result;
+  }
+
+  /**
+   * @param client
+   * @param nquads
+   * @return
+   */
+  public static boolean setNquad(DgraphClient client, List<DgraphProto.NQuad> nquads) {
+    if (null == client || null == nquads) {
+      return false;
+    }
+    if (nquads.size() == 0) {
+      return true;
+    }
+
+    Transaction txn = client.newTransaction();
+    try {
+      DgraphProto.Mutation.Builder builder = DgraphProto.Mutation.newBuilder();
+      for (int i = 0; i < nquads.size(); i++) {
+        builder.addSet(nquads.get(i));
+      }
+      DgraphProto.Request request =
+          DgraphProto.Request.newBuilder().addMutations(builder.build()).setCommitNow(true).build();
+      DgraphProto.Response res = txn.doRequest(request);
+      LOGGER.debug(res.toString());
+
+    } catch (Exception e) {
+      LOGGER.error(e.getMessage());
+      return false;
+
+    } finally {
+      txn.discard();
+    }
+
+    // done
+    return true;
   }
 }

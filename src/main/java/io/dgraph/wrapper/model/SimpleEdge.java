@@ -1,18 +1,26 @@
 package io.dgraph.wrapper.model;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 public class SimpleEdge implements Serializable {
   String fromUid;
   String edgeType;
   String toUid;
+  Map<String, Object> facets;
 
   public SimpleEdge() {}
 
   public SimpleEdge(String from, String edgeType, String to) {
+    this(from, edgeType, to, new HashMap<>());
+  }
+
+  public SimpleEdge(String from, String edgeType, String to, Map<String, Object> facets) {
     setFromUid(from);
     setEdgeType(edgeType);
     setToUid(to);
+    setFacets(facets);
   }
 
   /**
@@ -54,5 +62,13 @@ public class SimpleEdge implements Serializable {
 
   public void setToUid(String toUid) {
     this.toUid = toUid;
+  }
+
+  public Map<String, Object> getFacets() {
+    return facets;
+  }
+
+  public void setFacets(Map<String, Object> facets) {
+    this.facets = facets;
   }
 }

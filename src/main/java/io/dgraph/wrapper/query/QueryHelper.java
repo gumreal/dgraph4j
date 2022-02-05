@@ -459,4 +459,46 @@ public class QueryHelper {
       return null;
     }
   }
+
+  /**
+   * @param client
+   * @param uid
+   * @param prediction
+   * @param facet
+   * @return
+   */
+  public static int sumFacet(DgraphClient client, String uid, String prediction, String facet) {
+    // check
+    if (null == client
+        || GeneralHelper.isEmpty(uid)
+        || GeneralHelper.isEmpty(prediction)
+        || GeneralHelper.isEmpty(facet)) {
+      LOGGER.warn("invalid parameter");
+      return 0;
+    }
+
+    // query
+    String dql = String.format(DQL_sum_facet, uid, prediction, facet);
+    LOGGER.debug(dql);
+
+    DgraphProto.Response res = client.newTransaction().query(dql);
+    String resultStr = res.getJson().toStringUtf8();
+    LOGGER.debug(resultStr);
+
+    // parse result
+    JsonArray arr = parseResultArr(resultStr);
+    if (null == arr || arr.size() == 0) {
+      LOGGER.warn("invalid result");
+      return 0;
+    }
+    return arr.get(0).getAsJsonObject().get("sum(val(item))").getAsInt();
+  }
+
+  private static String DQL_sum_facet =
+      "{\n"
+          + "\tresult(func:uid(%s)){\n"
+          + "\t\t%s @facets(item as %s)\n"
+          + "\t\tsum(val(item))\n"
+          + "\t}\n"
+          + "}";
 }

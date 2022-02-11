@@ -56,6 +56,8 @@ public class TestBase {
       return predicates;
     }
 
+    private static Set<String> predicates;
+
     @Override
     public Map<String, String> primaryPairs() {
       Map<String, String> map = new HashMap<>();
@@ -117,6 +119,8 @@ public class TestBase {
       }
       return predicates;
     }
+
+    private static Set<String> predicates;
 
     @Override
     public Map<String, String> primaryPairs() {

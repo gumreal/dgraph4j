@@ -13,8 +13,6 @@ public abstract class VertexBase implements Serializable {
 
   private String uid;
 
-  protected transient Set<String> predicates;
-
   /** */
   public VertexBase() {}
 

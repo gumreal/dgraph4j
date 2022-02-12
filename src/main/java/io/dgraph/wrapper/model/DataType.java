@@ -8,7 +8,8 @@ public enum DataType {
   DT_GEO("geo"),
   DT_INT("int"),
   DT_STRING("string"),
-  DT_UID("uid");
+  DT_UID("uid"),
+  DT_DGRAPH_TYPE("dgraph.type");
 
   private String dgraphType;
 

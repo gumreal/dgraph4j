@@ -59,8 +59,8 @@ public class TestBase {
     private static Set<String> predicates;
 
     @Override
-    public Map<String, String> primaryPairs() {
-      Map<String, String> map = new HashMap<>();
+    public Map<String, Object> primaryPairs() {
+      Map<String, Object> map = new HashMap<>();
       map.put("bundleName", getBundleName());
       return map;
     }
@@ -123,8 +123,8 @@ public class TestBase {
     private static Set<String> predicates;
 
     @Override
-    public Map<String, String> primaryPairs() {
-      Map<String, String> map = new HashMap<>();
+    public Map<String, Object> primaryPairs() {
+      Map<String, Object> map = new HashMap<>();
       map.put("country", getCountry());
       return map;
     }

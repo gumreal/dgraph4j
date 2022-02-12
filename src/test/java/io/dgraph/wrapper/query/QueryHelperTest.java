@@ -4,9 +4,10 @@ import io.dgraph.DgraphClient;
 import io.dgraph.wrapper.TestBase;
 import io.dgraph.wrapper.model.VertexBase;
 import io.dgraph.wrapper.mutation.MutationSet;
-import java.util.*;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+
+import java.util.*;
 
 public class QueryHelperTest extends TestBase {
 
@@ -85,7 +86,7 @@ public class QueryHelperTest extends TestBase {
 
   @Test
   public void testGetByPredicates() {
-    Map<String, String> map = new HashMap<>();
+    Map<String, Object> map = new HashMap<>();
     map.put("bundleName", "b13-1");
     map.put("ext", "ext01");
     map.put("e1", "e1_v");

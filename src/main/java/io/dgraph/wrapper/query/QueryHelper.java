@@ -5,13 +5,24 @@ import io.dgraph.DgraphClient;
 import io.dgraph.DgraphProto;
 import io.dgraph.wrapper.GeneralHelper;
 import io.dgraph.wrapper.model.VertexBase;
-import java.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.*;
 
 /** */
 public class QueryHelper {
   private static Logger LOGGER = LoggerFactory.getLogger(QueryHelper.class.getSimpleName());
+
+  /**
+   * @param client
+   * @param dql
+   * @return
+   */
+  public static String dqlQuery(DgraphClient client, String dql) {
+    DgraphProto.Response res = client.newTransaction().query(dql);
+    return res.getJson().toStringUtf8();
+  }
 
   /**
    * Get vertx, with its edge to Vertx
@@ -180,14 +191,14 @@ public class QueryHelper {
    * @return
    */
   public static List<String> getUidByPredicates(
-      DgraphClient client, Map<String, String> conditions) {
+      DgraphClient client, Map<String, Object> conditions) {
     if (null == client || null == conditions || conditions.size() == 0) {
       LOGGER.warn("invalid input");
       return null;
     }
 
     String predicate1 = null;
-    String value1 = null;
+    Object value1 = null;
     StringBuffer otherConditions = new StringBuffer();
     StringBuffer predicates = new StringBuffer();
     predicates.append("\t\tuid\n");

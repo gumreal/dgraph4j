@@ -70,7 +70,7 @@ public abstract class VertexBase implements Serializable {
    *
    * @return
    */
-  public abstract Map<String, String> primaryPairs();
+  public abstract Map<String, Object> primaryPairs();
 
   public String getDgraphType() {
     return dgraphType;

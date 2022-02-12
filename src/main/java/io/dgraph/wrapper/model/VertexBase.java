@@ -5,11 +5,15 @@ import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 import java.util.Map;
 import java.util.Set;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** Dgraph Custom Data Type */
 public abstract class VertexBase implements Serializable {
+  protected Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
+
   @SerializedName("dgraph.type")
-  protected String dgraphType = this.getClass().getSimpleName();
+  private String dgraphType = this.getClass().getSimpleName();
 
   private String uid;
 
@@ -28,6 +32,10 @@ public abstract class VertexBase implements Serializable {
    */
   public String toJson() {
     return new Gson().toJson(this);
+  }
+
+  public String toString() {
+    return toJson();
   }
 
   /**

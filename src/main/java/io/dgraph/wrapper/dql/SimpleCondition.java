@@ -17,6 +17,16 @@ public class SimpleCondition {
     this.notLogic = notLogic;
   }
 
+  /** @return */
+  public String dqlFunc() {
+    // TODO finish this
+    return String.format(
+        "func:%s(%s,%s)",
+        op.name(),
+        key,
+        (value instanceof String) ? (String.format("\"%s\"", value)) : ("" + value));
+  }
+
   public boolean isNotLogic() {
     return notLogic;
   }

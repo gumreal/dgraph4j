@@ -4,10 +4,9 @@ import io.dgraph.DgraphClient;
 import io.dgraph.wrapper.TestBase;
 import io.dgraph.wrapper.model.VertexBase;
 import io.dgraph.wrapper.mutation.MutationSet;
+import java.util.*;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-
-import java.util.*;
 
 public class QueryHelperTest extends TestBase {
 

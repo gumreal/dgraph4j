@@ -5,10 +5,9 @@ import io.dgraph.DgraphClient;
 import io.dgraph.DgraphProto;
 import io.dgraph.wrapper.GeneralHelper;
 import io.dgraph.wrapper.model.VertexBase;
+import java.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.*;
 
 /** */
 public class QueryHelper {

@@ -46,6 +46,16 @@ public class CascadeGroup {
     return this;
   }
 
+  /**
+   * Generate DQL Filter expression
+   *
+   * @return
+   */
+  public String dqlFilter() {
+    // TODO finish this
+    return "";
+  }
+
   public List<CascadeGroup> getCascadeGroups() {
     return cascadeGroups;
   }

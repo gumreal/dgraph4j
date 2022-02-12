@@ -1,9 +1,10 @@
 package io.dgraph.wrapper.dql;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Query {
+public class Query implements Serializable {
   List<QueryItem> items = new ArrayList<>();
 
   public Query addItem(QueryItem item) {
@@ -17,6 +18,14 @@ public class Query {
    * @return
    */
   public String toDql() {
-    return "";
+    StringBuffer buffer = new StringBuffer();
+    buffer.append("{\n");
+    items.forEach(
+        item -> {
+          item.toDql(1, buffer);
+          buffer.append("\t\n");
+        });
+    buffer.append("}");
+    return buffer.toString();
   }
 }

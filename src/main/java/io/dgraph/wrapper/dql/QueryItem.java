@@ -1,9 +1,11 @@
 package io.dgraph.wrapper.dql;
 
+import io.dgraph.wrapper.GeneralHelper;
 import io.dgraph.wrapper.model.DataType;
+import java.io.Serializable;
 import java.util.*;
 
-public class QueryItem {
+public class QueryItem implements Serializable {
   private String head;
   private SimpleCondition func;
   private CascadeGroup filter;
@@ -65,5 +67,36 @@ public class QueryItem {
     }
     edges.add(edgeQuery);
     return this;
+  }
+
+  /**
+   * @param i
+   * @param buffer
+   */
+  public void toDql(int i, StringBuffer buffer) {
+    String p1 = GeneralHelper.getIndentPrefix(i);
+
+    // head, func, filter
+    buffer.append(
+        String.format(
+            "%s%s%s %s{\n",
+            p1,
+            head,
+            null == func ? "" : "(" + func.dqlFunc() + ")",
+            null == filter ? "" : filter.dqlFilter()));
+
+    // fields
+    String p2 = GeneralHelper.getIndentPrefix(i + 1);
+    if (null != fields) {
+      fields.forEach(s -> buffer.append(p2 + s + "\n"));
+    }
+
+    // edges
+    if (null != edges) {
+      buffer.append(p2 + "\n");
+      edges.forEach(item -> item.toDql(i + 1, buffer));
+    }
+
+    buffer.append(p1 + "}\n");
   }
 }

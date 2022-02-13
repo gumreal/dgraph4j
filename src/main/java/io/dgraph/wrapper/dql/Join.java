@@ -1,6 +1,10 @@
 package io.dgraph.wrapper.dql;
 
 public enum Join {
-  and,
-  or,
+  AND,
+  OR;
+
+  public String joinStr() {
+    return " " + this.name() + " ";
+  }
 }

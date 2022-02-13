@@ -1,16 +1,18 @@
 package io.dgraph.wrapper.dql;
 
+import io.dgraph.wrapper.GeneralHelper;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+/** */
 public abstract class SimpleGroup {
-  boolean notLogic;
-  Join join;
-  List<SimpleCondition> simpleConditions = new ArrayList<>();
+  private boolean notLogic;
+  private Join join;
+  private List<SimpleCondition> simpleConditions = new ArrayList<>();
 
   public SimpleGroup() {
-    this(false, Join.and);
+    this(false, Join.AND);
   }
 
   public SimpleGroup(boolean notLogic, Join join) {
@@ -29,5 +31,28 @@ public abstract class SimpleGroup {
     // add map conditions
     map.forEach((k, v) -> simpleConditions.add(new SimpleCondition(k, op, v)));
     return this;
+  }
+
+  public boolean hasExpression() {
+    return simpleConditions.size() > 0;
+  }
+
+  /** @return */
+  public String toDql() {
+    StringBuffer buffer = new StringBuffer();
+    int expCount = 0;
+    for (SimpleCondition cond : simpleConditions) {
+      if (expCount++ > 0) {
+        buffer.append(join.joinStr());
+      }
+      buffer.append(cond.toDql());
+    }
+
+    // done
+    return notLogic ? GeneralHelper.wrapDqlNot(buffer.toString()) : buffer.toString();
+  }
+
+  public String toString() {
+    return toDql();
   }
 }

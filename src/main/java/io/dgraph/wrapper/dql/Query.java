@@ -22,7 +22,7 @@ public class Query implements Serializable {
     buffer.append("{\n");
     items.forEach(
         item -> {
-          item.toDql(1, buffer);
+          item.appendDql(1, buffer);
           buffer.append("\t\n");
         });
     buffer.append("}");

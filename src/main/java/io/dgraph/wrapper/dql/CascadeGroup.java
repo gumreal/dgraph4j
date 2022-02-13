@@ -1,5 +1,6 @@
 package io.dgraph.wrapper.dql;
 
+import io.dgraph.wrapper.GeneralHelper;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +15,7 @@ public class CascadeGroup {
   }
 
   public CascadeGroup(boolean notLogic) {
-    this(notLogic, Join.and);
+    this(notLogic, Join.AND);
   }
 
   public CascadeGroup(boolean notLogic, Join join) {
@@ -46,14 +47,49 @@ public class CascadeGroup {
     return this;
   }
 
+  /** @return */
+  public boolean hasExpression() {
+    return simpleGroups.size() > 0 || cascadeGroups.size() > 0;
+  }
+
   /**
    * Generate DQL Filter expression
    *
    * @return
    */
-  public String dqlFilter() {
-    // TODO finish this
-    return "";
+  public String toDql() {
+    StringBuffer buffer = new StringBuffer();
+
+    int expCount = 0;
+    for (SimpleGroup sGroup : simpleGroups) {
+      if (!sGroup.hasExpression()) {
+        continue;
+      }
+      if (expCount++ > 0) {
+        buffer.append(join.joinStr());
+      }
+      buffer.append("(" + sGroup.toDql() + ")");
+    }
+    for (CascadeGroup cGroup : cascadeGroups) {
+      if (!cGroup.hasExpression()) {
+        continue;
+      }
+      if (expCount++ > 0) {
+        buffer.append(join.joinStr());
+      }
+      buffer.append("(" + cGroup.toDql() + ")");
+    }
+
+    // done
+    return notLogic ? GeneralHelper.wrapDqlNot(buffer.toString()) : buffer.toString();
+  }
+
+  public String toString() {
+    return toDql();
+  }
+
+  public List<SimpleGroup> getSimpleGroups() {
+    return simpleGroups;
   }
 
   public List<CascadeGroup> getCascadeGroups() {

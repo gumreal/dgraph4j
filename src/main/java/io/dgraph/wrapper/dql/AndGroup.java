@@ -8,7 +8,7 @@ public class AndGroup extends SimpleGroup {
   }
 
   public AndGroup(boolean notLogic) {
-    super(notLogic, Join.and);
+    super(notLogic, Join.AND);
   }
 
   public static SimpleGroup create(SimpleCondition... cond) {

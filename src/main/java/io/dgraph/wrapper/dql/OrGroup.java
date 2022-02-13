@@ -3,7 +3,7 @@ package io.dgraph.wrapper.dql;
 public class OrGroup extends SimpleGroup {
   /** @param notLogic */
   private OrGroup(boolean notLogic) {
-    super(notLogic, Join.or);
+    super(notLogic, Join.OR);
   }
 
   /**

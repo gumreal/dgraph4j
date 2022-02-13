@@ -80,4 +80,15 @@ public class GeneralHelper {
     }
     return buffer.toString();
   }
+
+  /**
+   * @param exp
+   * @return
+   */
+  public static String wrapDqlNot(String exp) {
+    return NOT_PREFIX + exp + NOT_SUFFIX;
+  }
+
+  private static String NOT_PREFIX = "NOT (";
+  private static String NOT_SUFFIX = ")";
 }

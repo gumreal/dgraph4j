@@ -13,7 +13,7 @@ public class Query implements Serializable {
   }
 
   /**
-   * TODO generate GQL
+   * generate GQL
    *
    * @return
    */

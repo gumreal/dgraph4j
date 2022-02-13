@@ -2,10 +2,11 @@ package io.dgraph.wrapper.dql;
 
 import io.dgraph.wrapper.GeneralHelper;
 import io.dgraph.wrapper.model.DataType;
-import java.io.Serializable;
-import java.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.Serializable;
+import java.util.*;
 
 public class QueryItem implements Serializable {
   private Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
@@ -114,7 +115,7 @@ public class QueryItem implements Serializable {
    * @param edgeQuery
    * @return
    */
-  public QueryItem followEdge(QueryItem edgeQuery) {
+  public QueryItem follow(QueryItem edgeQuery) {
     if (null == this.edges) {
       this.edges = new ArrayList<>();
     }
@@ -126,7 +127,7 @@ public class QueryItem implements Serializable {
    * @param edgeQuery
    * @return
    */
-  public QueryItem reverseEdge(QueryItem edgeQuery) {
+  public QueryItem reverse(QueryItem edgeQuery) {
     if (null == this.edges) {
       this.edges = new ArrayList<>();
     }

@@ -2,11 +2,10 @@ package io.dgraph.wrapper.dql;
 
 import io.dgraph.wrapper.GeneralHelper;
 import io.dgraph.wrapper.model.DataType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.Serializable;
 import java.util.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class QueryItem implements Serializable {
   private Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());

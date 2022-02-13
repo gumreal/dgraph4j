@@ -2,11 +2,14 @@ package io.dgraph.wrapper.model;
 
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonToken;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.Serializable;
 import java.util.Map;
 import java.util.Set;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /** Dgraph Custom Data Type */
 public abstract class VertexBase implements Serializable {
@@ -56,6 +59,31 @@ public abstract class VertexBase implements Serializable {
       vertex.setUid(getUid());
     }
     return vertex;
+  }
+
+  /**
+   * @param reader
+   * @return
+   */
+  public String parseDgraphType(JsonReader reader) {
+    String dt = null;
+    try {
+      JsonToken token = reader.peek();
+      if (JsonToken.BEGIN_ARRAY == token) {
+        reader.beginArray();
+        while (reader.hasNext()) {
+          if (null == dt) {
+            dt = reader.nextString();
+          }
+        }
+        reader.endArray();
+      } else if (JsonToken.STRING == token) {
+        dt = reader.nextString();
+      }
+    } catch (Exception e) {
+      logger.warn("parseDgraphType EXCEPTION " + e.getMessage());
+    }
+    return dt;
   }
 
   /**

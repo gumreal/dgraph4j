@@ -4,16 +4,15 @@ import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.Serializable;
 import java.util.Map;
 import java.util.Set;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** Dgraph Custom Data Type */
 public abstract class VertexBase implements Serializable {
-  protected Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
+  protected transient Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
 
   @SerializedName("dgraph.type")
   private String dgraphType = this.getClass().getSimpleName();

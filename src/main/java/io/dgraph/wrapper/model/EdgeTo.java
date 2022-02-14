@@ -3,8 +3,15 @@ package io.dgraph.wrapper.model;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * represent the end vertex of an edge, with facets map of the edge
+ *
+ * @param <T> the end vertex type, which must extend the VertexBase class
+ */
 public class EdgeTo<T extends VertexBase> {
   private T toV;
+
+  /** the facets map */
   private Map<String, Object> facets;
 
   public EdgeTo() {}

@@ -1,8 +1,10 @@
 package io.dgraph.wrapper.model;
 
 /**
- * @param <F>
- * @param <T>
+ * an edge, with its start vertex, end vertex, edge type, and facets
+ *
+ * @param <F> the start vertex type, which must extend the VertexBase class
+ * @param <T> the end vertex type, which must extend the VertexBase class
  */
 public class Edge<F extends VertexBase, T extends VertexBase> extends EdgeTo<T> {
   private F fromV;

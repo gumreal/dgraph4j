@@ -10,8 +10,10 @@ import org.slf4j.LoggerFactory;
 public class QueryItem implements Serializable {
   private Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
 
-  private boolean reverse;
   private String head;
+  private boolean reverse;
+  private boolean facets;
+
   private SimpleCondition func;
   private CascadeGroup filter;
 
@@ -111,22 +113,49 @@ public class QueryItem implements Serializable {
   }
 
   /**
-   * @param edgeQuery
-   * @return
+   * follow an edge, without the edge facets
+   *
+   * @param edgeQuery the query object to add
+   * @return this QueryItem object
    */
   public QueryItem follow(QueryItem edgeQuery) {
+    return follow(edgeQuery, false);
+  }
+
+  /**
+   * follow an edge
+   *
+   * @param edgeQuery the query object to add
+   * @param facets need facet values or not
+   * @return this QueryItem object
+   */
+  public QueryItem follow(QueryItem edgeQuery, boolean facets) {
     if (null == this.edges) {
       this.edges = new ArrayList<>();
     }
+    edgeQuery.facets = facets;
     edges.add(edgeQuery);
     return this;
   }
 
   /**
-   * @param edgeQuery
-   * @return
+   * follow an edge in the reverse direction, without the edge facets
+   *
+   * @param edgeQuery the query object to add
+   * @return this QueryItem object
    */
   public QueryItem reverse(QueryItem edgeQuery) {
+    return reverse(edgeQuery, false);
+  }
+
+  /**
+   * follow an edge in the reverse direction
+   *
+   * @param edgeQuery the query object to add
+   * @param facets need facet values or not
+   * @return this QueryItem object
+   */
+  public QueryItem reverse(QueryItem edgeQuery, boolean facets) {
     if (null == this.edges) {
       this.edges = new ArrayList<>();
     }
@@ -134,13 +163,16 @@ public class QueryItem implements Serializable {
       logger.warn("using reverseEdge method to add a QueryItem which is not a reverse query");
     }
 
+    edgeQuery.facets = facets;
     edges.add(edgeQuery);
     return this;
   }
 
   /**
-   * @param i
-   * @param buffer
+   * create the DQL query string, then append it to the buffer
+   *
+   * @param i level, start from 0, how many "\t" to prefix to each line
+   * @param buffer the destination string buffer
    */
   public void appendDql(int i, StringBuffer buffer) {
     String p1 = GeneralHelper.getIndentPrefix(i);
@@ -148,11 +180,12 @@ public class QueryItem implements Serializable {
     // head, func, filter
     buffer.append(
         String.format(
-            "%s%s%s %s{\n",
+            "%s%s%s %s %s{\n",
             p1,
             (reverse ? "~" : "") + head,
             null == func ? "" : "(" + func.toDql(true) + ")",
-            (null == filter || !filter.hasExpression()) ? "" : "@filter(" + filter.toDql() + ")"));
+            (null == filter || !filter.hasExpression()) ? "" : "@filter(" + filter.toDql() + ")",
+            facets ? "@facets" : ""));
 
     // fields
     String p2 = GeneralHelper.getIndentPrefix(i + 1);

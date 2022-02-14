@@ -4,16 +4,23 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+/** a DQL query */
 public class Query implements Serializable {
   List<QueryItem> items = new ArrayList<>();
 
+  /**
+   * add a sub query
+   *
+   * @param item to add
+   * @return this Query object
+   */
   public Query addItem(QueryItem item) {
     items.add(item);
     return this;
   }
 
   /**
-   * generate GQL
+   * generate DQL
    *
    * @return
    */

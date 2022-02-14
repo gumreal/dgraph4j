@@ -7,10 +7,11 @@ import java.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/** Top Element of a DQL Query */
 public class QueryItem implements Serializable {
   private Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
 
-  private String head;
+  private String name;
   private boolean reverse;
   private boolean facets;
 
@@ -20,40 +21,46 @@ public class QueryItem implements Serializable {
   private Set<String> fields;
   private List<QueryItem> edges;
 
-  /** @param head */
-  private QueryItem(String head) {
-    this(head, false);
+  /** @param name */
+  private QueryItem(String name) {
+    this(name, false);
   }
 
   /**
-   * @param head
+   * @param name
    * @param reverse
    */
-  private QueryItem(String head, boolean reverse) {
-    this.head = head;
+  private QueryItem(String name, boolean reverse) {
+    this.name = name;
     this.reverse = reverse;
   }
 
   /**
-   * @param head
-   * @return
+   * Create a QueryItem with its name
+   *
+   * @param name the query name
+   * @return created object
    */
-  public static QueryItem create(String head) {
-    return new QueryItem(head);
+  public static QueryItem create(String name) {
+    return new QueryItem(name);
   }
 
   /**
-   * @param head
-   * @param reverse
+   * Create a QueryItem with leading head, specify its reverse property
+   *
+   * @param name
+   * @param reverse this is a reverse edge query or not
    * @return
    */
-  public static QueryItem create(String head, boolean reverse) {
-    return new QueryItem(head, reverse);
+  public static QueryItem create(String name, boolean reverse) {
+    return new QueryItem(name, reverse);
   }
 
   /**
-   * @param cond
-   * @return
+   * set the main func of this QueryItem
+   *
+   * @param cond a SimpleCondition
+   * @return this QueryItem object
    */
   public QueryItem func(SimpleCondition cond) {
     this.func = cond;
@@ -61,8 +68,10 @@ public class QueryItem implements Serializable {
   }
 
   /**
-   * @param group
-   * @return
+   * filter by a CascadeGroup conditions
+   *
+   * @param group the CascadeGroup conditions
+   * @return this QueryItem object
    */
   public QueryItem filter(CascadeGroup group) {
     this.filter = group;
@@ -70,8 +79,10 @@ public class QueryItem implements Serializable {
   }
 
   /**
-   * @param group
-   * @return
+   * filter by a SimpleGroup conditions
+   *
+   * @param group the SimpleGroup conditions
+   * @return this QueryItem object
    */
   public QueryItem filter(SimpleGroup group) {
     this.filter = new CascadeGroup().withGroup(group);
@@ -79,31 +90,59 @@ public class QueryItem implements Serializable {
   }
 
   /**
-   * @param fieldsToAdd
-   * @return
+   * add fields to the result field list, also add uid and dgraph.type
+   *
+   * @param fieldsToAdd to add
+   * @return this QueryItem object
    */
   public QueryItem fields(Collection<String> fieldsToAdd) {
     return fields(fieldsToAdd, true);
   }
 
   /**
-   * @param fieldsToAdd
-   * @param schemaType
-   * @return
+   * add fields to the result field list
+   *
+   * @param fieldsToAdd to add
+   * @param schemaType whether add uid and draph.type to the result list or not
+   * @return this QueryItem object
    */
   public QueryItem fields(Collection<String> fieldsToAdd, boolean schemaType) {
     if (null == this.fields) {
       this.fields = new HashSet<>();
     }
     if (schemaType) {
-      this.fields.add(DataType.DT_UID.toString());
-      this.fields.add(DataType.DT_DGRAPH_TYPE.toString());
+      fieldUid();
+      fieldDgraphType();
     }
 
     this.fields.addAll(fieldsToAdd);
     return this;
   }
 
+  /**
+   * add uid to the result field list
+   *
+   * @return this QueryItem object
+   */
+  public QueryItem fieldUid() {
+    return field(DataType.DT_UID.toString());
+  }
+
+  /**
+   * add dgraph.type to the result field list
+   *
+   * @return this QueryItem object
+   */
+  public QueryItem fieldDgraphType() {
+    return field(DataType.DT_DGRAPH_TYPE.toString());
+  }
+
+  /**
+   * add field to the result field list
+   *
+   * @param field to add
+   * @return this QueryItem object
+   */
   public QueryItem field(String field) {
     if (null == this.fields) {
       this.fields = new HashSet<>();
@@ -182,7 +221,7 @@ public class QueryItem implements Serializable {
         String.format(
             "%s%s%s %s %s{\n",
             p1,
-            (reverse ? "~" : "") + head,
+            (reverse ? "~" : "") + name,
             null == func ? "" : "(" + func.toDql(true) + ")",
             (null == filter || !filter.hasExpression()) ? "" : "@filter(" + filter.toDql() + ")",
             facets ? "@facets" : ""));

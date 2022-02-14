@@ -138,6 +138,15 @@ public class QueryItem implements Serializable {
   }
 
   /**
+   * add uid and dgraph.type to the result field list
+   *
+   * @return this QueryItem object
+   */
+  public QueryItem fieldBase() {
+    return fieldUid().fieldDgraphType();
+  }
+
+  /**
    * add field to the result field list
    *
    * @param field to add

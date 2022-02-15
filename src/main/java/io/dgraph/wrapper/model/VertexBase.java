@@ -2,7 +2,10 @@ package io.dgraph.wrapper.model;
 
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
+import io.dgraph.DgraphProto;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.slf4j.Logger;
@@ -78,6 +81,25 @@ public abstract class VertexBase implements Serializable {
 
   public void setStubUid(int stubSeq) {
     setUid(String.format("_:%s_%d", getDgraphType(), stubSeq));
+  }
+
+  /** @return */
+  public boolean isStubUid() {
+    return null != getUid() && getUid().startsWith("_:");
+  }
+
+  /** @return */
+  public List<DgraphProto.NQuad> toNQuadList() {
+    List<DgraphProto.NQuad> list = new ArrayList<>();
+    list.add(NQuadHelper.newNQuad(getUid(), DataType.DT_DGRAPH_TYPE.toString(), getDgraphType()));
+
+    Map<String, Object> pairs = primaryPairs();
+    pairs.forEach(
+        (k, v) -> {
+          list.add(NQuadHelper.newNQuad(getUid(), k, v));
+        });
+
+    return list;
   }
 
   public String getDgraphType() {

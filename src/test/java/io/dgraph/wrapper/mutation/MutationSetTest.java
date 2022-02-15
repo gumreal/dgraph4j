@@ -1,19 +1,20 @@
 package io.dgraph.wrapper.mutation;
 
-import static org.testng.AssertJUnit.assertEquals;
-
 import io.dgraph.DgraphClient;
 import io.dgraph.DgraphProto;
 import io.dgraph.wrapper.TestBase;
 import io.dgraph.wrapper.WrapperException;
-import io.dgraph.wrapper.model.NquadHelper;
+import io.dgraph.wrapper.model.NQuadHelper;
 import io.dgraph.wrapper.model.VertexBase;
 import io.dgraph.wrapper.query.QueryHelper;
+import org.testng.Assert;
+import org.testng.annotations.Test;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.testng.Assert;
-import org.testng.annotations.Test;
+
+import static org.testng.AssertJUnit.assertEquals;
 
 public class MutationSetTest extends TestBase {
 
@@ -116,11 +117,11 @@ public class MutationSetTest extends TestBase {
       // edge with facets
       List<DgraphProto.NQuad> nquadList = new ArrayList<>();
       nquadList.add(
-          NquadHelper.newNquadEdge(
-              bundleUid, edgeName, country1, NquadHelper.newFacet("weight", new Integer(1))));
+          NQuadHelper.newNQuadWithFacets(
+              bundleUid, edgeName, country1, NQuadHelper.newFacet("weight", new Integer(1))));
       nquadList.add(
-          NquadHelper.newNquadEdge(
-              bundleUid, edgeName, country2, NquadHelper.newFacet("weight", new Integer(2))));
+          NQuadHelper.newNQuadWithFacets(
+              bundleUid, edgeName, country2, NQuadHelper.newFacet("weight", new Integer(2))));
       boolean result = MutationSet.setNquad(client, nquadList);
       Assert.assertTrue(result);
 

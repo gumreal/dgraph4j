@@ -2,12 +2,11 @@ package io.dgraph.wrapper.model;
 
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.Serializable;
 import java.util.Map;
 import java.util.Set;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** Dgraph Custom Data Type */
 public abstract class VertexBase implements Serializable {
@@ -72,6 +71,14 @@ public abstract class VertexBase implements Serializable {
    * @return
    */
   public abstract Map<String, Object> primaryPairs();
+
+  public void setStubUid() {
+    setStubUid(1);
+  }
+
+  public void setStubUid(int stubSeq) {
+    setUid(String.format("_:%s_%d", getDgraphType(), stubSeq));
+  }
 
   public String getDgraphType() {
     return dgraphType;

@@ -5,7 +5,48 @@ import io.dgraph.DgraphProto;
 
 /** */
 public class NQuadHelper {
-  public static DgraphProto.NQuad newNQuad(String subjectUid, String prediction, Object value) {
+  /**
+   * @param subjectUid
+   * @param prediction
+   * @param value
+   * @return
+   */
+  public static DgraphProto.NQuad newNQuadField(
+      String subjectUid, String prediction, Object value) {
+    if (null == value) {
+      return null;
+    }
+
+    DgraphProto.Value.Builder valueBuilder = DgraphProto.Value.newBuilder();
+    if (value instanceof Integer) {
+      valueBuilder.setIntVal((Integer) value);
+
+    } else if (value instanceof Float) {
+      valueBuilder.setDoubleVal((Float) value);
+
+    } else if (value instanceof Double) {
+      valueBuilder.setDoubleVal((Double) value);
+
+    } else if (value instanceof Boolean) {
+      valueBuilder.setBoolVal((Boolean) value);
+
+    } else {
+      valueBuilder.setStrVal((String) value);
+    }
+    return DgraphProto.NQuad.newBuilder()
+        .setSubject(subjectUid)
+        .setPredicate(prediction)
+        .setObjectValue(valueBuilder)
+        .build();
+  }
+
+  /**
+   * @param subjectUid
+   * @param prediction
+   * @param value
+   * @return
+   */
+  public static DgraphProto.NQuad newNQuadEdge(String subjectUid, String prediction, Object value) {
     return DgraphProto.NQuad.newBuilder()
         .setSubject(subjectUid)
         .setPredicate(prediction)
@@ -13,7 +54,14 @@ public class NQuadHelper {
         .build();
   }
 
-  public static DgraphProto.NQuad newNQuadWithFacets(
+  /**
+   * @param subjectUid
+   * @param prediction
+   * @param value
+   * @param facets
+   * @return
+   */
+  public static DgraphProto.NQuad newNQuadEdgeWithFacets(
       String subjectUid, String prediction, Object value, DgraphProto.Facet... facets) {
     DgraphProto.NQuad.Builder builder =
         DgraphProto.NQuad.newBuilder()
@@ -30,8 +78,12 @@ public class NQuadHelper {
     return builder.build();
   }
 
+  /**
+   * @param key
+   * @param value
+   * @return
+   */
   public static DgraphProto.Facet newFacet(String key, Object value) {
-
     return DgraphProto.Facet.newBuilder()
         .setKey(key)
         .setValType(DgraphProto.Facet.ValType.STRING)

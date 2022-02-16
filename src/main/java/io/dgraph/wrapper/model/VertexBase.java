@@ -91,12 +91,18 @@ public abstract class VertexBase implements Serializable {
   /** @return */
   public List<DgraphProto.NQuad> toNQuadList() {
     List<DgraphProto.NQuad> list = new ArrayList<>();
-    list.add(NQuadHelper.newNQuad(getUid(), DataType.DT_DGRAPH_TYPE.toString(), getDgraphType()));
+    list.add(
+        NQuadHelper.newNQuadField(getUid(), DataType.DT_DGRAPH_TYPE.toString(), getDgraphType()));
 
     Map<String, Object> pairs = primaryPairs();
     pairs.forEach(
         (k, v) -> {
-          list.add(NQuadHelper.newNQuad(getUid(), k, v));
+          if (null != v) {
+            DgraphProto.NQuad nQuad = NQuadHelper.newNQuadField(getUid(), k, v);
+            if (null != nQuad) {
+              list.add(nQuad);
+            }
+          }
         });
 
     return list;

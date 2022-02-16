@@ -4,6 +4,7 @@ import io.dgraph.DgraphClient;
 import io.dgraph.DgraphProto;
 import io.dgraph.Transaction;
 import java.util.List;
+import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,49 +13,49 @@ public class Mutation {
 
   /**
    * @param client
-   * @param setNquads
-   * @param delNquads
+   * @param setNQuads
+   * @param delNQuads
    * @return
    */
-  public static boolean mutate(
-      DgraphClient client, List<DgraphProto.NQuad> setNquads, List<DgraphProto.NQuad> delNquads) {
+  public static Map<String, String> mutate(
+      DgraphClient client, List<DgraphProto.NQuad> setNQuads, List<DgraphProto.NQuad> delNQuads) {
     if (null == client) {
       LOGGER.warn("null DgraphClient");
-      return false;
+      return null;
     }
-    if ((null == setNquads || setNquads.size() == 0)
-        && (null == delNquads || delNquads.size() == 0)) {
+    if ((null == setNQuads || setNQuads.size() == 0)
+        && (null == delNQuads || delNQuads.size() == 0)) {
       LOGGER.debug("no data to mutate");
-      return true;
+      return null;
     }
 
     Transaction txn = client.newTransaction();
     try {
       DgraphProto.Mutation.Builder builder = DgraphProto.Mutation.newBuilder();
-      if (null != setNquads) {
-        for (int i = 0; i < setNquads.size(); i++) {
-          builder.addSet(setNquads.get(i));
+      if (null != setNQuads) {
+        for (int i = 0; i < setNQuads.size(); i++) {
+          builder.addSet(setNQuads.get(i));
         }
       }
-      if (null != delNquads) {
-        for (int i = 0; i < delNquads.size(); i++) {
-          builder.addDel(delNquads.get(i));
+      if (null != delNQuads) {
+        for (int i = 0; i < delNQuads.size(); i++) {
+          System.out.println("toDelete NQuad: " + delNQuads.get(i).toString());
+          builder.addDel(delNQuads.get(i));
         }
       }
+
       DgraphProto.Request request =
           DgraphProto.Request.newBuilder().addMutations(builder.build()).setCommitNow(true).build();
       DgraphProto.Response res = txn.doRequest(request);
-      LOGGER.debug(res.toString());
+      return res.getUidsMap();
 
     } catch (Exception e) {
+      e.printStackTrace();
       LOGGER.error(e.getMessage());
-      return false;
+      return null;
 
     } finally {
       txn.discard();
     }
-
-    // done
-    return true;
   }
 }

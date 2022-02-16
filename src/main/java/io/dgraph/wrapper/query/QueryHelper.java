@@ -490,6 +490,7 @@ public class QueryHelper {
     // query
     String dql = String.format(DQL_sum_facet, uid, prediction, facet);
     LOGGER.debug(dql);
+    System.out.println(dql);
 
     DgraphProto.Response res = client.newTransaction().query(dql);
     String resultStr = res.getJson().toStringUtf8();

@@ -1,5 +1,7 @@
 package io.dgraph.wrapper.mutation;
 
+import static org.testng.AssertJUnit.assertEquals;
+
 import io.dgraph.DgraphClient;
 import io.dgraph.DgraphProto;
 import io.dgraph.wrapper.TestBase;
@@ -7,14 +9,11 @@ import io.dgraph.wrapper.WrapperException;
 import io.dgraph.wrapper.model.NQuadHelper;
 import io.dgraph.wrapper.model.VertexBase;
 import io.dgraph.wrapper.query.QueryHelper;
-import org.testng.Assert;
-import org.testng.annotations.Test;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
-import static org.testng.AssertJUnit.assertEquals;
+import org.testng.Assert;
+import org.testng.annotations.Test;
 
 public class MutationSetTest extends TestBase {
 

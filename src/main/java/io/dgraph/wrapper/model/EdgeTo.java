@@ -1,5 +1,6 @@
 package io.dgraph.wrapper.model;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -8,16 +9,16 @@ import java.util.Map;
  *
  * @param <T> the end vertex type, which must extend the VertexBase class
  */
-public class EdgeTo<T extends VertexBase> {
-  private T toV;
+public class EdgeTo<T extends VertexBase> implements Serializable {
+  private T vertex;
 
   /** the facets map */
   private Map<String, Object> facets;
 
   public EdgeTo() {}
 
-  public EdgeTo(T toV) {
-    this.toV = toV;
+  public EdgeTo(T vertex) {
+    this.vertex = vertex;
   }
 
   public EdgeTo<T> withFacet(String k, String v) {
@@ -44,12 +45,23 @@ public class EdgeTo<T extends VertexBase> {
     return this;
   }
 
-  public T getToV() {
-    return toV;
+  /**
+   * @param k
+   * @return
+   */
+  public Object getFacet(String k) {
+    if (null == facets || !facets.containsKey(k)) {
+      return null;
+    }
+    return facets.get(k);
   }
 
-  public void setToV(T toV) {
-    this.toV = toV;
+  public T getVertex() {
+    return vertex;
+  }
+
+  public void setVertex(T vertex) {
+    this.vertex = vertex;
   }
 
   public Map<String, Object> getFacets() {

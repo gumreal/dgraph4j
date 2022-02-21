@@ -84,9 +84,19 @@ public class NQuadHelper {
    * @return
    */
   public static DgraphProto.Facet newFacet(String key, Object value) {
+    DgraphProto.Facet.ValType valType = DgraphProto.Facet.ValType.STRING;
+    if (null != valType) {
+      if (value instanceof Integer) {
+        valType = DgraphProto.Facet.ValType.INT;
+      } else if (value instanceof Float) {
+        valType = DgraphProto.Facet.ValType.FLOAT;
+      } else if (value instanceof Boolean) {
+        valType = DgraphProto.Facet.ValType.BOOL;
+      }
+    }
     return DgraphProto.Facet.newBuilder()
         .setKey(key)
-        .setValType(DgraphProto.Facet.ValType.STRING)
+        .setValType(valType)
         .setValue(ByteString.copyFromUtf8((null == value) ? "" : value.toString()))
         .build();
   }

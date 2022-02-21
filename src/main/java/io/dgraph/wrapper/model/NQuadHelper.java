@@ -83,21 +83,51 @@ public class NQuadHelper {
    * @param value
    * @return
    */
-  public static DgraphProto.Facet newFacet(String key, Object value) {
-    DgraphProto.Facet.ValType valType = DgraphProto.Facet.ValType.STRING;
-    if (null != valType) {
-      if (value instanceof Integer) {
-        valType = DgraphProto.Facet.ValType.INT;
-      } else if (value instanceof Float) {
-        valType = DgraphProto.Facet.ValType.FLOAT;
-      } else if (value instanceof Boolean) {
-        valType = DgraphProto.Facet.ValType.BOOL;
-      }
-    }
+  public static DgraphProto.Facet newFacet(String key, Integer value) {
     return DgraphProto.Facet.newBuilder()
         .setKey(key)
-        .setValType(valType)
-        .setValue(ByteString.copyFromUtf8((null == value) ? "" : value.toString()))
+        .setValType(DgraphProto.Facet.ValType.INT)
+        .setValue(ByteString.copyFromUtf8((null == value) ? "0" : value.toString()))
         .build();
+  }
+
+  /**
+   * @param key
+   * @param value
+   * @return
+   */
+  public static DgraphProto.Facet newFacet(String key, Float value) {
+    return DgraphProto.Facet.newBuilder()
+            .setKey(key)
+            .setValType(DgraphProto.Facet.ValType.FLOAT)
+            .setValue(ByteString.copyFromUtf8((null == value) ? "0.0" : value.toString()))
+            .build();
+
+  }
+  /**
+   * @param key
+   * @param value
+   * @return
+   */
+  public static DgraphProto.Facet newFacet(String key, String value) {
+    return DgraphProto.Facet.newBuilder()
+            .setKey(key)
+            .setValType(DgraphProto.Facet.ValType.STRING)
+            .setValue(ByteString.copyFromUtf8((null == value) ? "" : value.toString()))
+            .build();
+
+  }
+  /**
+   * @param key
+   * @param value
+   * @return
+   */
+  public static DgraphProto.Facet newFacet(String key, Boolean value) {
+    return DgraphProto.Facet.newBuilder()
+            .setKey(key)
+            .setValType(DgraphProto.Facet.ValType.BOOL)
+            .setValue(ByteString.copyFromUtf8((null == value) ? "FALSE" : value.toString()))
+            .build();
+
   }
 }

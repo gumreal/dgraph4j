@@ -98,11 +98,10 @@ public class NQuadHelper {
    */
   public static DgraphProto.Facet newFacet(String key, Float value) {
     return DgraphProto.Facet.newBuilder()
-            .setKey(key)
-            .setValType(DgraphProto.Facet.ValType.FLOAT)
-            .setValue(ByteString.copyFromUtf8((null == value) ? "0.0" : value.toString()))
-            .build();
-
+        .setKey(key)
+        .setValType(DgraphProto.Facet.ValType.FLOAT)
+        .setValue(ByteString.copyFromUtf8((null == value) ? "0.0" : value.toString()))
+        .build();
   }
   /**
    * @param key
@@ -111,11 +110,10 @@ public class NQuadHelper {
    */
   public static DgraphProto.Facet newFacet(String key, String value) {
     return DgraphProto.Facet.newBuilder()
-            .setKey(key)
-            .setValType(DgraphProto.Facet.ValType.STRING)
-            .setValue(ByteString.copyFromUtf8((null == value) ? "" : value.toString()))
-            .build();
-
+        .setKey(key)
+        .setValType(DgraphProto.Facet.ValType.STRING)
+        .setValue(ByteString.copyFromUtf8((null == value) ? "" : value.toString()))
+        .build();
   }
   /**
    * @param key
@@ -124,10 +122,9 @@ public class NQuadHelper {
    */
   public static DgraphProto.Facet newFacet(String key, Boolean value) {
     return DgraphProto.Facet.newBuilder()
-            .setKey(key)
-            .setValType(DgraphProto.Facet.ValType.BOOL)
-            .setValue(ByteString.copyFromUtf8((null == value) ? "FALSE" : value.toString()))
-            .build();
-
+        .setKey(key)
+        .setValType(DgraphProto.Facet.ValType.BOOL)
+        .setValue(ByteString.copyFromUtf8((null == value) ? "FALSE" : value.toString()))
+        .build();
   }
 }

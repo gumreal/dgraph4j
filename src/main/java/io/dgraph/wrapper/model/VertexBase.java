@@ -3,13 +3,14 @@ package io.dgraph.wrapper.model;
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 import io.dgraph.DgraphProto;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /** Dgraph Custom Data Type */
 public abstract class VertexBase implements Serializable {
@@ -61,6 +62,28 @@ public abstract class VertexBase implements Serializable {
     return vertex;
   }
 
+  public VertexBase merge(VertexBase other) {
+    mergeUid(other);
+    mergeChildren(other);
+    return this;
+  }
+
+  /** @param other */
+  protected void mergeUid(VertexBase other) {
+    if (null == other) {
+      return;
+    }
+    if (isStubUid() && !other.isStubUid()) {
+      setUid(other.getUid());
+    }
+  }
+
+  /**
+   * @param other
+   * @return
+   */
+  protected abstract VertexBase mergeChildren(VertexBase other);
+
   /**
    * get all property names except typeName and uid
    *
@@ -74,6 +97,13 @@ public abstract class VertexBase implements Serializable {
    * @return
    */
   public abstract Map<String, Object> primaryPairs();
+
+  /**
+   * primary values to a string
+   *
+   * @return
+   */
+  public abstract String getBizKey();
 
   public void setStubUid() {
     setStubUid(1);

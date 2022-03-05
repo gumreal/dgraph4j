@@ -56,6 +56,78 @@ public class EdgeTo<T extends VertexBase> implements Serializable {
     return facets.get(k);
   }
 
+  /**
+   * merge other to this
+   *
+   * @param other
+   * @return
+   */
+  public boolean merge(EdgeTo<T> other) {
+    if (null == other || null == other.getVertex()) {
+      return false;
+    }
+
+    T otherVertex = other.getVertex();
+    if (null == getVertex()) {
+      setVertex(otherVertex);
+    } else {
+      getVertex().merge(otherVertex);
+    }
+
+    mergeFacets(other.getFacets());
+    return true;
+  }
+
+  /** @param map */
+  protected void mergeFacets(Map<String, Object> map) {
+    if (null == getFacets()) {
+      setFacets(map);
+      return;
+    }
+    map.entrySet().forEach(
+        entry -> {
+            Object v = entry.getValue();
+            if (v instanceof Integer) {
+                Integer vInt = (Integer) v;
+                if (!getFacets().containsKey(entry.getKey())) {
+                  withFacet(entry.getKey(), vInt);
+                } else {
+                  Object oldV = getFacet(entry.getKey());
+                  withFacet(
+                      entry.getKey(),
+                      vInt.intValue()
+                          + ((null != oldV && oldV instanceof Integer)
+                              ? ((Integer) oldV).intValue()
+                              : 0));
+                }
+            } else if (v instanceof Float) {
+                Float vFloat = (Float) v;
+                if (!getFacets().containsKey(entry.getKey())) {
+                  withFacet(entry.getKey(), vFloat);
+                } else {
+                  Object oldV = getFacet(entry.getKey());
+                  withFacet(
+                      entry.getKey(),
+                      vFloat.floatValue()
+                          + ((null != oldV && oldV instanceof Float)
+                              ? ((Float) oldV).floatValue()
+                              : 0.0f));
+                }
+            } else {
+                // treat v as String
+                String vStr = (String) v;
+                if (!getFacets().containsKey(entry.getKey())) {
+                  withFacet(entry.getKey(), vStr);
+                } else {
+                  Object oldV = getFacet(entry.getKey());
+                  withFacet(
+                      entry.getKey(), vStr + ((null != oldV) ? (", " + oldV) : ""));
+                }
+            }
+        }
+    );
+  }
+
   public T getVertex() {
     return vertex;
   }

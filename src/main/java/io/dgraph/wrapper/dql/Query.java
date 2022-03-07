@@ -20,6 +20,19 @@ public class Query implements Serializable {
   }
 
   /**
+   * add queries
+   *
+   * @param toAddItems
+   * @return
+   */
+  public Query addItems(List<QueryItem> toAddItems) {
+    if (null != toAddItems) {
+      items.addAll(toAddItems);
+    }
+    return this;
+  }
+
+  /**
    * generate DQL
    *
    * @return

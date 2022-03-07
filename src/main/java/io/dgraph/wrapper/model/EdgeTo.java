@@ -84,10 +84,11 @@ public class EdgeTo<T extends VertexBase> implements Serializable {
       setFacets(map);
       return;
     }
-    map.entrySet().forEach(
-        entry -> {
-            Object v = entry.getValue();
-            if (v instanceof Integer) {
+    map.entrySet()
+        .forEach(
+            entry -> {
+              Object v = entry.getValue();
+              if (v instanceof Integer) {
                 Integer vInt = (Integer) v;
                 if (!getFacets().containsKey(entry.getKey())) {
                   withFacet(entry.getKey(), vInt);
@@ -100,7 +101,7 @@ public class EdgeTo<T extends VertexBase> implements Serializable {
                               ? ((Integer) oldV).intValue()
                               : 0));
                 }
-            } else if (v instanceof Float) {
+              } else if (v instanceof Float) {
                 Float vFloat = (Float) v;
                 if (!getFacets().containsKey(entry.getKey())) {
                   withFacet(entry.getKey(), vFloat);
@@ -113,19 +114,17 @@ public class EdgeTo<T extends VertexBase> implements Serializable {
                               ? ((Float) oldV).floatValue()
                               : 0.0f));
                 }
-            } else {
+              } else {
                 // treat v as String
                 String vStr = (String) v;
                 if (!getFacets().containsKey(entry.getKey())) {
                   withFacet(entry.getKey(), vStr);
                 } else {
                   Object oldV = getFacet(entry.getKey());
-                  withFacet(
-                      entry.getKey(), vStr + ((null != oldV) ? (", " + oldV) : ""));
+                  withFacet(entry.getKey(), vStr + ((null != oldV) ? (", " + oldV) : ""));
                 }
-            }
-        }
-    );
+              }
+            });
   }
 
   public T getVertex() {

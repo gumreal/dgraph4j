@@ -18,6 +18,10 @@ public class CascadeGroup {
     this(notLogic, Join.AND);
   }
 
+  public CascadeGroup(Join join) {
+    this(false, join);
+  }
+
   public CascadeGroup(boolean notLogic, Join join) {
     this.notLogic = notLogic;
     this.join = join;

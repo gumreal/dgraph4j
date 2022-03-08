@@ -15,7 +15,9 @@ public class Query implements Serializable {
    * @return this Query object
    */
   public Query addItem(QueryItem item) {
-    items.add(item);
+    if (null != item) {
+      items.add(item);
+    }
     return this;
   }
 

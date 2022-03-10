@@ -113,7 +113,11 @@ public abstract class VertexBase implements Serializable {
   }
 
   public void setStubUidBizKey() {
-    setUid(String.format("_:%s_%s", getDgraphType(), getBizKey()));
+    setStubUid(getBizKey());
+  }
+
+  public void setStubUid(String suffix) {
+    setUid(String.format("_:%s_%s", getDgraphType(), suffix));
   }
 
   /** @return */

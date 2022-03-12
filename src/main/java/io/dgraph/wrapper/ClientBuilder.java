@@ -16,6 +16,7 @@ public class ClientBuilder {
   private Logger logger = LoggerFactory.getLogger(ClientBuilder.class.getName());
   private Set<String> uriSet = new HashSet<>();
   private List<AlphaUri> alphaList = new ArrayList<>();
+  private int maxInBoundBytes = 4 * 1024 * 1024;
 
   private ClientBuilder() {}
 
@@ -30,6 +31,10 @@ public class ClientBuilder {
    * @throws WrapperException
    */
   public ClientBuilder withAlpha(String host, int port) throws WrapperException {
+    return withAlpha(host, port, 0);
+  }
+
+  public ClientBuilder withAlpha(String host, int port, int maxInBytes) throws WrapperException {
     if (GeneralHelper.isEmpty(host) || port <= 0) {
       throw new WrapperException("invalid alpha uri");
     }
@@ -39,6 +44,10 @@ public class ClientBuilder {
       logger.info("duplicated alpha " + key);
     } else {
       alphaList.add(new AlphaUri(host, port));
+    }
+
+    if (maxInBytes > this.maxInBoundBytes) {
+      this.maxInBoundBytes = maxInBytes;
     }
 
     return this;
@@ -67,7 +76,11 @@ public class ClientBuilder {
    * @return
    */
   private DgraphGrpc.DgraphStub makeStub(String addr, int port) {
-    ManagedChannel channel = ManagedChannelBuilder.forAddress(addr, port).usePlaintext().build();
+    ManagedChannel channel =
+        ManagedChannelBuilder.forAddress(addr, port)
+            .usePlaintext()
+            .maxInboundMessageSize(maxInBoundBytes)
+            .build();
     return DgraphGrpc.newStub(channel);
   }
 

@@ -3,10 +3,11 @@ package io.dgraph.wrapper.mutation;
 import io.dgraph.DgraphClient;
 import io.dgraph.DgraphProto;
 import io.dgraph.Transaction;
-import java.util.List;
-import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.List;
+import java.util.Map;
 
 public class Mutation {
   private static Logger LOGGER = LoggerFactory.getLogger(MutationSet.class.getSimpleName());
@@ -39,7 +40,6 @@ public class Mutation {
       }
       if (null != delNQuads) {
         for (int i = 0; i < delNQuads.size(); i++) {
-          System.out.println("toDelete NQuad: " + delNQuads.get(i).toString());
           builder.addDel(delNQuads.get(i));
         }
       }

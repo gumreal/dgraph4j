@@ -89,7 +89,6 @@ public class MutationDelete {
     try {
       DgraphProto.Mutation mu =
           Helpers.deleteEdges(DgraphProto.Mutation.newBuilder().build(), uid, edgeType);
-      System.out.println(mu);
 
       DgraphProto.Response res = txn.mutate(mu);
       txn.commit();
@@ -138,14 +137,12 @@ public class MutationDelete {
    */
   public static void deleteVertex(DgraphClient client, String uid) {
     String dql = String.format(DQL_delete_vertex, uid);
-    System.out.println(dql);
 
     Transaction txn = client.newTransaction();
     try {
       DgraphProto.Mutation mutation =
           DgraphProto.Mutation.newBuilder().setDeleteJson(ByteString.copyFromUtf8(dql)).build();
       DgraphProto.Response res = txn.mutate(mutation);
-      LOGGER.debug(res.toString());
       txn.commit();
 
     } catch (Exception e) {

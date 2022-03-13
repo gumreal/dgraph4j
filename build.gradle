@@ -41,7 +41,7 @@ apply plugin: 'signing'
 
 group = 'io.dgraph'
 archivesBaseName = 'dgraph4j'
-version = '21.03.2.p18.20220313a'
+version = '21.03.2.p19.20220313b'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 

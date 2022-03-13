@@ -36,8 +36,9 @@ public class MutationDelete {
       DgraphProto.Mutation mu = b.build();
       DgraphProto.Response res = txn.mutate(mu);
       txn.commit();
-      LOGGER.debug(res.toString());
 
+    } catch (Exception e) {
+      LOGGER.error("EXCEPTION" + e.getMessage(), e);
     } finally {
     }
   }
@@ -69,8 +70,9 @@ public class MutationDelete {
       DgraphProto.Mutation mu = b.build();
       DgraphProto.Response res = txn.mutate(mu);
       txn.commit();
-      LOGGER.debug(res.toString());
 
+    } catch (Exception e) {
+      LOGGER.error("EXCEPTION" + e.getMessage(), e);
     } finally {
     }
   }
@@ -91,8 +93,9 @@ public class MutationDelete {
 
       DgraphProto.Response res = txn.mutate(mu);
       txn.commit();
-      LOGGER.debug(res.toString());
 
+    } catch (Exception e) {
+      LOGGER.error("EXCEPTION" + e.getMessage(), e);
     } finally {
     }
   }
@@ -122,8 +125,9 @@ public class MutationDelete {
       DgraphProto.Mutation mu = b.build();
       DgraphProto.Response res = txn.mutate(mu);
       txn.commit();
-      LOGGER.debug(res.toString());
 
+    } catch (Exception e) {
+      LOGGER.error("EXCEPTION" + e.getMessage(), e);
     } finally {
     }
   }
@@ -145,9 +149,7 @@ public class MutationDelete {
       txn.commit();
 
     } catch (Exception e) {
-      e.printStackTrace();
-      LOGGER.error(e.getMessage());
-
+      LOGGER.error("EXCEPTION" + e.getMessage(), e);
     } finally {
     }
   }

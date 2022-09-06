@@ -109,7 +109,15 @@ public abstract class VertexBase implements Serializable {
   }
 
   public void setStubUid(int stubSeq) {
-    setUid(String.format("_:%s_%d", getDgraphType(), stubSeq));
+    setUid(String.format("_:%s", getStubVar(stubSeq)));
+  }
+
+  public String getStubVar() {
+    return getStubVar(1);
+  }
+
+  public String getStubVar(int stubSeq) {
+    return String.format("%s_%d", getDgraphType(), stubSeq);
   }
 
   public void setStubUidBizKey() {
@@ -117,7 +125,15 @@ public abstract class VertexBase implements Serializable {
   }
 
   public void setStubUid(String suffix) {
-    setUid(String.format("_:%s_%s", getDgraphType(), suffix));
+    setUid(String.format("_:%s", getStubBizVar(suffix)));
+  }
+
+  public String getStubBizVar() {
+    return getStubBizVar(getBizKey());
+  }
+
+  public String getStubBizVar(String suffix) {
+    return String.format("%s_%s", getDgraphType(), suffix);
   }
 
   /** @return */

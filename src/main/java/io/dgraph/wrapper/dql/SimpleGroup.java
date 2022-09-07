@@ -20,6 +20,11 @@ public abstract class SimpleGroup {
     this.join = join;
   }
 
+  public SimpleGroup withUid(String uid) {
+    simpleConditions.add(SimpleCondition.UID(uid));
+    return this;
+  }
+
   public SimpleGroup withConditions(SimpleCondition... cond) {
     for (int i = 0; i < cond.length; i++) {
       simpleConditions.add(cond[i]);

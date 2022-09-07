@@ -1,6 +1,7 @@
 package io.dgraph.wrapper.dql;
 
 import io.dgraph.wrapper.GeneralHelper;
+import io.dgraph.wrapper.model.DataType;
 
 public class SimpleCondition {
   public static final int EMPTY_VALUE_AS_NOT_EXP = 1; // null value, means: NOT has(key)
@@ -21,6 +22,14 @@ public class SimpleCondition {
     this.op = op;
     this.value = obj;
     this.notLogic = notLogic;
+  }
+
+  /**
+   * @param uid
+   * @return
+   */
+  public static SimpleCondition UID(String uid) {
+    return new SimpleCondition(DataType.DT_UID.toString(), Op.uid, uid);
   }
 
   public String toDql() {

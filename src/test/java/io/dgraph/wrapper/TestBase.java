@@ -48,6 +48,11 @@ public class TestBase {
     }
 
     @Override
+    protected VertexBase mergeChildren(VertexBase other) {
+      return null;
+    }
+
+    @Override
     public Set<String> getPredicates() {
       if (null == predicates) {
         predicates = new HashSet<>();
@@ -63,6 +68,11 @@ public class TestBase {
       Map<String, Object> map = new HashMap<>();
       map.put("bundleName", getBundleName());
       return map;
+    }
+
+    @Override
+    public String getBizKey() {
+      return null;
     }
 
     public static Bundle fromJson(String jsonStr) {
@@ -112,6 +122,11 @@ public class TestBase {
     }
 
     @Override
+    protected VertexBase mergeChildren(VertexBase other) {
+      return null;
+    }
+
+    @Override
     public Set<String> getPredicates() {
       if (null == predicates) {
         predicates = new HashSet<>();
@@ -127,6 +142,11 @@ public class TestBase {
       Map<String, Object> map = new HashMap<>();
       map.put("country", getCountry());
       return map;
+    }
+
+    @Override
+    public String getBizKey() {
+      return null;
     }
 
     public static VertexBase fromJson(String jsonStr) {
